@@ -77,6 +77,7 @@ const logInWithEmailAndPassword = async (email, password) => {
   };
 
   export {
+    getAuth,
     auth,
     db,
     logInWithEmailAndPassword,
