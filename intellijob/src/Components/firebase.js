@@ -37,24 +37,6 @@ const logInWithEmailAndPassword = async (email, password) => {
     return true
   };
 
-  //const getSnapshot = async
-  const addToAdminPool = async (firstName, lastName, email, password) => {
-    console.log(firstName)
-    try {
-      await addDoc(collection(db, "potentialAdmins"), {
-        firstName, 
-        lastName,
-        authProvider: "local",
-        email,
-      });
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-      return
-    }
-    alert("Applied to be an Admin");
-  };
-
   const registerWithEmailAndPassword = async (firstName, lastName, accountType, email, password, setDisplayName) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -97,7 +79,6 @@ const logInWithEmailAndPassword = async (email, password) => {
   export {
     auth,
     db,
-    addToAdminPool,
     logInWithEmailAndPassword,
     registerWithEmailAndPassword,
     sendPasswordReset,
