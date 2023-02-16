@@ -85,9 +85,6 @@ function Register() {
             type="submit"
             onClick={() => {register(firstName, lastName, accountType, email, password); }}
           >Submit </button>
-          {/* <button
-            onClick={() => registerWithEmailAndPassword(firstName, lastName, accountType, email, password)}
-            >Register</button> */}
         </div>
         <div>
             Have an account? Sign in here!
