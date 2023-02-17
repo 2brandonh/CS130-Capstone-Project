@@ -6,6 +6,7 @@ import {
   Home,
   Login,
   Register,
+  ResetPassword,
 } from './Pages'
 
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/reset" element={<ResetPassword />} />
       </Routes>
     </div>
   );
