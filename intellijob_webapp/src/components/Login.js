@@ -36,16 +36,6 @@ const Login = (props) => {
 
     return (
         <Wrapper>
-            <Navbar>
-                <a href="/">
-                    <img src="/images/brand_logo.png" alt="" />
-                </a>
-                <div>
-                    <Join>Join Now</Join>
-                    <Sign>Sign In</Sign>
-                </div>
-            </Navbar>
-            
             <HeroWrapper>
                 <Hero>
                     <h1>{HeroPlaceholder.substring(0, shownChars)}</h1>
@@ -63,65 +53,6 @@ const Login = (props) => {
 
 const Wrapper = styled.div`
   padding: 0px;
-`;
-
-const Navbar = styled.nav`
-    max-width: 1100px; // controls the width at which IntelliJob and Sign Up are
-    margin: auto;
-    padding: 12px 0 16px;
-    padding-top: 20px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    /* background-color: #181818; */ //background color of the navbar (does not stretch across)
-    /* & > a {
-    width: 150px;
-    height: 34px;
-    @media (max-width: 768px) {
-        padding: 0 5px;
-    }
-    } */
-
-    & > a > img {
-    max-width: 200px;
-    }
-`;
-
-const Join = styled.a`
-    font-size: 18px;
-    padding: 10px 10px;
-    text-decoration: none;
-    border-radius: 4px;
-    color: white;
-    margin-right: 12px;
-    transition-duration: 500ms;
-
-    &:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-    color: #FF5733;
-    text-decoration: none;
-    transition-duration: 500ms;
-    }
-`;
-
-const Sign = styled.a`
-    box-shadow: inset 0 0 0 1px #FF5733;
-    color: #FF5733;
-    border-radius: 24px;
-    transition-duration: 170ms;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 40px;
-    padding: 12px 30px;
-    transition-duration: 500ms;
-
-  &:hover {
-    padding: 12px 50px;
-    text-decoration: none;
-    transition-duration: 500ms;
-  }
 `;
 
 const HeroWrapper = styled.section`
@@ -197,10 +128,10 @@ const Join2 = styled.div`
     animation: 1.9s ${fadeIn} ease-out;
 
   &:hover {
-    max-width:250px;
-    padding: 12px 40px;
     text-decoration: none;
     transition-duration: 500ms;
+    background-color: #FF5733;
+    color: white;
   }
     `;
 
