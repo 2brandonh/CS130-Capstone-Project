@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
     const [shownChars, setShownChars] = useState(0)
@@ -19,6 +20,12 @@ const Login = (props) => {
         "talent acquisiton."
     ]
 
+    let navigate = useNavigate(); //Can only be used within a Router component
+    const routeSignUp = () =>{ 
+      let path = `signup`; 
+      navigate(path);
+    }
+
     useEffect(() => {
       const interval = setInterval(() =>
         setIndex(index => index + 1),
@@ -30,7 +37,7 @@ const Login = (props) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setShownChars(c => c + 1)
-          }, 50);
+          }, 40);
         return () => clearInterval(interval);
     }, []);
 
@@ -42,7 +49,7 @@ const Login = (props) => {
                     {shownChars >= HeroPlaceholder.length + 10 &&
                         <div>
                             <Subtext>Find out how we can help you empower your {TEXTS[index % TEXTS.length]}</Subtext>
-                            <Join2>Count Me In</Join2>
+                            <Join2 onClick={routeSignUp}>Count Me In</Join2>
                         </div>
                     }
                 </Hero>
@@ -132,6 +139,7 @@ const Join2 = styled.div`
     transition-duration: 500ms;
     background-color: #FF5733;
     color: white;
+    cursor: pointer;
   }
     `;
 

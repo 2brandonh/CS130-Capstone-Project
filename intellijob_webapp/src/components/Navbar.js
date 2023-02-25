@@ -1,14 +1,27 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = (props) => {
+    let navigate = useNavigate(); 
+
+    const routeSignUp = () =>{ 
+      let path = `signup`; 
+      navigate(path);
+    }
+
+    const routeLogin = () =>{ 
+        let path = `login`; 
+        navigate(path);
+      }
+    
     return(
         <Nav>
             <a href="/">
                 <img src="/images/brand_logo.png" alt="" />
             </a>
             <div>
-                <Join>Join Now</Join>
-                <Sign>Sign In</Sign>
+                <Join onClick={routeSignUp}>Join Now</Join>
+                <Sign onClick={routeLogin}>Sign In</Sign>
             </div>
         </Nav>
     )
@@ -52,6 +65,7 @@ const Join = styled.a`
     color: #FF5733;
     text-decoration: none;
     transition-duration: 500ms;
+    cursor: pointer;
     }
 `;
 
@@ -70,6 +84,7 @@ const Sign = styled.a`
     padding: 12px 50px;
     text-decoration: none;
     transition-duration: 500ms;
+    cursor: pointer;
   }
 `;
 
