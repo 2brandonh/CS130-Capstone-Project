@@ -37,7 +37,7 @@ const Login = (props) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setShownChars(c => c + 1)
-          }, 40);
+          }, 32);
         return () => clearInterval(interval);
     }, []);
 

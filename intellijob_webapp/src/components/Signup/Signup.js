@@ -10,9 +10,13 @@ const Signup = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setShownChars(c => c + 1)
-          }, 0); //should be 40
+          }, 32); //should be 40
         return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => { // Smoother transition with form scrolling
+        window.scrollTo(0, 0)
+    }, [formStatus])
 
     const HeroPlaceholder = "Are you a jobseeker or employer?"
 
