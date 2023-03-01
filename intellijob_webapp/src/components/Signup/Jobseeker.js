@@ -8,7 +8,7 @@ const Jobseeker = () => {
             last: "",
             industry: "",
             yoe: "",
-            ideal: "",
+            description: "",
             pass: "",
             pass2: ""
         }
@@ -52,7 +52,7 @@ const Jobseeker = () => {
 
                     <StyledInput type="password" value={form.pass} placeholder={"Password"} onChange={e => editForm(e, "pass")}/>
                     <StyledInput type="password" value={form.pass2} placeholder={"Confirm Password"} onChange={e => editForm(e, "pass2")} />
-                    <StyledDesc type="password" value={form.ideal} placeholder={"What is your ideal job?"} onChange={e => editForm(e, "ideal")} />
+                    <StyledDesc type="password" value={form.description} placeholder={"What is your ideal job?"} onChange={e => editForm(e, "description")} />
 
                     <StyledButton type="submit">Find your next job</StyledButton>
                 </InputWrapper>
