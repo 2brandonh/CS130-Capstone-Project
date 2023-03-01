@@ -1,72 +1,76 @@
 import styled, { keyframes } from "styled-components";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
+import JobLayout from "./JobLayout";
 
 const JobseekerHome = () => {
-    const [shownChars, setShownChars] = useState(0)
-    const [formStatus, setFormStatus] = useState(null)
+  const [shownChars, setShownChars] = useState(0)
+  const [formStatus, setFormStatus] = useState(null)
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setShownChars(c => c + 1)
-          }, 32); //should be 40
-        return () => clearInterval(interval);
-    }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShownChars(c => c + 1)
+    }, 0); //should be 32
+    return () => clearInterval(interval);
+  }, []);
 
-    useEffect(() => { // Smoother transition with form scrolling
-        window.scrollTo(0, 0)
-    }, [formStatus])
+  useEffect(() => { // Smoother transition with form scrolling
+    window.scrollTo(0, 0)
+  }, [formStatus])
 
-    const HeroPlaceholder = "We found some great opportunities just for you."
+  const HeroPlaceholder = "We found some great opportunities just for you."
 
-    // const handleButtonDisplay = () =>
+  // const handleButtonDisplay = () =>
 
-    // const handleButtonDisplay = () => {
-    //     if (formStatus === null){
-    //         return(
-    //             <ButtonWrapper>
-    //                 <Button onClick={() => setFormStatus('JOB')}>Jobseeker</Button>
-    //                 <Button onClick={() => setFormStatus('EMP')}>Employer</Button>
-    //             </ButtonWrapper>
-    //         )
-    //     }
-    //     else if (formStatus === "JOB"){
-    //         return(
-    //             <div>
-    //             <ButtonWrapper>
-    //                 <ButtonClick onClick={() => setFormStatus('JOB')}>Jobseeker</ButtonClick>
-    //                 <Button2 onClick={() => setFormStatus('EMP')}>Employer</Button2>
-    //             </ButtonWrapper>
-    //                 <Jobseeker/>
-    //             </div>
-    //         )
-    //     }
-    //     else if (formStatus === "EMP"){
-    //         return(
-    //             <div>
-    //                 <ButtonWrapper>
-    //                     <Button2 onClick={() => setFormStatus('JOB')}>Jobseeker</Button2>
-    //                     <ButtonClick onClick={() => setFormStatus('EMP')}>Employer</ButtonClick>
-    //                 </ButtonWrapper>
-    //                 <Employer/>
-    //             </div>
-    //         )
-    //     }
-    // }
+  // const handleButtonDisplay = () => {
+  //     if (formStatus === null){
+  //         return(
+  //             <ButtonWrapper>
+  //                 <Button onClick={() => setFormStatus('JOB')}>Jobseeker</Button>
+  //                 <Button onClick={() => setFormStatus('EMP')}>Employer</Button>
+  //             </ButtonWrapper>
+  //         )
+  //     }
+  //     else if (formStatus === "JOB"){
+  //         return(
+  //             <div>
+  //             <ButtonWrapper>
+  //                 <ButtonClick onClick={() => setFormStatus('JOB')}>Jobseeker</ButtonClick>
+  //                 <Button2 onClick={() => setFormStatus('EMP')}>Employer</Button2>
+  //             </ButtonWrapper>
+  //                 <Jobseeker/>
+  //             </div>
+  //         )
+  //     }
+  //     else if (formStatus === "EMP"){
+  //         return(
+  //             <div>
+  //                 <ButtonWrapper>
+  //                     <Button2 onClick={() => setFormStatus('JOB')}>Jobseeker</Button2>
+  //                     <ButtonClick onClick={() => setFormStatus('EMP')}>Employer</ButtonClick>
+  //                 </ButtonWrapper>
+  //                 <Employer/>
+  //             </div>
+  //         )
+  //     }
+  // }
 
-    return(
-        <HeroWrapper>
-            <Hero> 
-                <h1> {HeroPlaceholder.substring(0, shownChars)} </h1>
-                {shownChars >= HeroPlaceholder.length + 10 && (
-                    <ButtonWrapper>
-                        <Button onClick={() => {}}>Show me more</Button>
-                        {/* <Button onClick={() => {}}>Polish resume</Button>
-                        <Button onClick={() => {}}>Write cover letter</Button> */}
-                    </ButtonWrapper>
-                )}
-            </Hero>
-        </HeroWrapper>
-    )
+  return (
+    <HeroWrapper>
+      <Hero>
+        <h1> {HeroPlaceholder.substring(0, shownChars)} </h1>
+        {shownChars >= HeroPlaceholder.length + 10 && (
+          <div>
+            <ButtonWrapper>
+              <Button onClick={() => { }}>Show me more</Button>
+              {/* <Button onClick={() => {}}>Polish resume</Button>
+                          <Button onClick={() => {}}>Write cover letter</Button> */}
+            </ButtonWrapper>
+            <JobLayout />
+          </div>
+        )}
+      </Hero>
+    </HeroWrapper >
+  )
 }
 
 const HeroWrapper = styled.section`
