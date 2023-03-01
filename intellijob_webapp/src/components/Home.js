@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login = (props) => {
+const Home = (props) => {
     const [shownChars, setShownChars] = useState(0)
     const [index, setIndex] = useState(0);
 
@@ -143,4 +143,4 @@ const Join2 = styled.div`
   }
     `;
 
-export default Login;
+export default Home;

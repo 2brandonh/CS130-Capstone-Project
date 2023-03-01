@@ -8,6 +8,7 @@ const Employer = () => {
             last: "",
             industry: "",
             company: "",
+            email: "",
             pass: "",
             pass2: ""
         }
@@ -49,6 +50,7 @@ const Employer = () => {
                         <StyledInput type="text" value={form.company} placeholder={"Industry"} onChange={e => editForm(e, "company")} />
                     </StyledRow>
 
+                    <StyledInput type="text" value={form.email} placeholder={"Email"} onChange={(e) => editForm(e, "email")} />
                     <StyledInput type="password" value={form.pass} placeholder={"Password"} onChange={e => editForm(e, "pass")}/>
                     <StyledInput type="password" value={form.pass2} placeholder={"Confirm Password"} onChange={e => editForm(e, "pass2")} />
 

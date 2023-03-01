@@ -1,7 +1,7 @@
 import './App.css';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Navbar from './components/Navbar/DefaultNavbar';
-import Login from "./components/Login"
+import Home from "./components/Home"
 import Signup from "./components/Signup/Signup"
 import JobseekerHome from './components/Jobseeker/JobseekerHome';
 
@@ -14,7 +14,7 @@ const App = () => {
       <BrowserRouter>
         <Navbar/>
         <Routes>
-          <Route path='/' element={<Login/>} />
+          <Route path='/' element={<Home/>} />
           <Route path='/signup' element={<Signup/>} />
           <Route path='/login' />
 
