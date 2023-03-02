@@ -3,7 +3,7 @@ import { useState, useEffect} from "react";
 
 // This is the individual listing for a job
 
-const JobListing = ({jobInfo}) => {
+const UserSavedListing = ({jobInfo}) => {
 
     return(
         <ListingWrapper>
@@ -31,7 +31,7 @@ const JobListing = ({jobInfo}) => {
 
                 <ButtonWrapper>
                     <Button onClick={() => { }}>Apply</Button>
-                    <Button onClick={() => { }}>Bookmark</Button>
+                    <Button onClick={() => { }}>Remove Bookmark</Button>
                     <Button onClick={() => { }}>Cover Letter</Button>
                 </ButtonWrapper>
 
@@ -139,4 +139,4 @@ const Button = styled.div`
   }
 `;
 
-export default JobListing
+export default UserSavedListing

@@ -1,10 +1,10 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect} from "react";
-import JobListing from "./JobListing";
+import JobListing from "./UserSavedListing";
 
 // This controls the layout and mapping of jobs on a page
 
-const JobLayout = () => {
+const UserSavedLayout = () => {
 
   let testJobs =
   [{
@@ -108,5 +108,5 @@ const JobWrapper = styled.section`
   } */
 `;
 
-export default JobLayout;
+export default UserSavedLayout;
 
