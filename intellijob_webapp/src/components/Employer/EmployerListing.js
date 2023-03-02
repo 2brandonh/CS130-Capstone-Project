@@ -3,7 +3,7 @@ import { useState, useEffect} from "react";
 
 // This is the individual listing for a job
 
-const JobListing = ({jobInfo}) => {
+const EmployerListing = ({jobInfo}) => {
 
     return(
         <ListingWrapper>
@@ -13,10 +13,18 @@ const JobListing = ({jobInfo}) => {
                     <a style={{float: "right", color: "#FF5733", "font-weight": "500"}}>${jobInfo.comp.toLocaleString("en-US")}</a>
                 </Header>
 
+                {/* 
+                
+                Job company info and recruiter is unnecessary for employee page, instead show id
+
                 <Company>
                     <a> {jobInfo.company}</a>
                     <a> {jobInfo.recruiter}</a>
-                    {/* <a> {jobInfo.posted} </a> */}
+                </Company> */}
+
+                <Company>
+                    <a> Position ID • {jobInfo.jobID}</a>
+                    <a> Posted on {jobInfo.posted}</a>
                 </Company>
 
                 <Company>
@@ -30,9 +38,8 @@ const JobListing = ({jobInfo}) => {
                 </Description>
 
                 <ButtonWrapper>
-                    <Button onClick={() => { }}>Apply</Button>
-                    <Button onClick={() => { }}>Bookmark</Button>
-                    <Button onClick={() => { }}>Cover Letter</Button>
+                    <Button onClick={() => { }}>Remove Position</Button>
+                    {/* <Button onClick={() => { }}>Cover Letter</Button> */}
                 </ButtonWrapper>
 
             </InnerWrapper>
@@ -139,4 +146,4 @@ const Button = styled.div`
   }
 `;
 
-export default JobListing
+export default EmployerListing
