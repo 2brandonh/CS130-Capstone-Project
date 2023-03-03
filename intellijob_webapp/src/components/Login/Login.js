@@ -13,7 +13,7 @@ const Login = () => {
       pass: "",
     }
   )
-  console.log(getAuth().currentUser)
+
   const editForm = (e, key) => {
     e.preventDefault();
 
@@ -35,8 +35,19 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      await logInWithEmailAndPassword(form.email, form.pass).then(() => {
-        navigate("/saved");
+      await logInWithEmailAndPassword(form.email, form.pass).then((result) => {
+        const auth = getAuth();
+        let user = auth.currentUser;
+        console.log(user)
+        if (result && getAuth().currentUser.displayName.includes("Employer: "))
+        {
+          navigate("/employer");
+        }
+        if (result && getAuth().currentUser.displayName.includes("Jobseeker: "))
+        {
+          navigate("/jobseeker");
+        }
+          
       })
     } catch (error) {
       console.log(error)
