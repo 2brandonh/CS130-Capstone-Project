@@ -30,22 +30,13 @@ const db = getFirestore(app);
 const logInWithEmailAndPassword = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      return true
     } catch (err) {
       console.error(err);
       alert(err.message);
     }
   };
 
-//   {
-//     first: "",
-//     last: "",
-//     industry: "",
-//     yoe: "",
-//     description: "",
-//     email: "",
-//     pass: "",
-//     pass2: ""
-//   }
 
   const registerJobseekerWithEmailAndPassword = async (first, last, industry, yoe, description, email, pass) => {
     try {
@@ -62,16 +53,13 @@ const logInWithEmailAndPassword = async (email, password) => {
         email,
       }).then(() => {
         updateProfile(auth.currentUser, {
-          displayName: first,
+          displayName: "Jobseeker: " + first,
         })
       });
-      
+      return true
     } catch (err) {
       console.error(err);
       alert(err.message);
-    }
-    finally {
-      console.log("done")
     }
   };
 
@@ -89,10 +77,10 @@ const logInWithEmailAndPassword = async (email, password) => {
         email,
       }).then(() => {
         updateProfile(auth.currentUser, {
-          displayName: first,
+          displayName: "Employer: "+ first,
         })
       });
-      
+      return true
     } catch (err) {
       console.error(err);
       alert(err.message);

@@ -1,8 +1,10 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import JobLayout from "./JobLayout";
+import { getAuth } from "firebase/auth";
 
 const JobseekerHome = () => {
+  console.log(getAuth().currentUser)
   const [shownChars, setShownChars] = useState(0)
   const [formStatus, setFormStatus] = useState(null)
 

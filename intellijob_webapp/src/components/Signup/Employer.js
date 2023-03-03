@@ -24,8 +24,9 @@ const Employer = () => {
         {
           try {
             await registerEmployerWithEmailAndPassword(form.first, form.last, form.company, form.industry, form.email, form.pass)
-            .then(() => {
-              navigate("/employer")
+            .then((result) => {
+              if (result)
+                navigate("/employer")
             })
           } catch (error) {
             console.log(error.message)

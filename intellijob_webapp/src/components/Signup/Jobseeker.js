@@ -28,8 +28,9 @@ const Jobseeker = () => {
           alert("Passwords must match");// setPasswordInvalid(true);
         } else {
             try {
-              await registerJobseekerWithEmailAndPassword(form.first, form.last, form.industry, form.yoe, form.description, form.email, form.pass).then(() => {
-                navigate("/saved");
+              await registerJobseekerWithEmailAndPassword(form.first, form.last, form.industry, form.yoe, form.description, form.email, form.pass).then((result) => {
+                if (result)
+                  navigate("/jobseeker");
               })
               
             } catch (error) {
