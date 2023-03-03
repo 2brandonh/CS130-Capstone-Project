@@ -1,24 +1,42 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
+import { logout } from "../firebase";
+import { useState } from "react";
+
+// NEED TO UPDATE NAVBAR ON SIGNOUT WITH AUTH PROP
 
 const Navbar = (props) => {
     let navigate = useNavigate(); 
-
+    let auth = getAuth();
+    const user = auth.currentUser;
     const routeSignUp = () =>{ 
       let path = `signup`; 
       navigate(path);
     }
-
+    // const [loggedIn, setLoggedIn] = useState(false);
+    // console.log(loggedIn)
+    // if (user !== null)
+    //     setLoggedIn(true)
     const routeLogin = () =>{ 
         let path = `login`; 
         navigate(path);
       }
     
+    const logoutUser = () => {
+        logout();
+        navigate("/");
+    }
+
     return(
         <Nav>
             <a href="/">
                 <img src="/images/brand_logo.png" alt="" />
             </a>
+            {/* {getAuth().currentUser !== null && <div>
+                <Join >Hello {getAuth().currentUser.displayName}</Join>
+                <Sign onClick={logoutUser}>Sign Out</Sign>
+            </div>} */}
             <div>
                 <Join onClick={routeSignUp}>Join Now</Join>
                 <Sign onClick={routeLogin}>Sign In</Sign>

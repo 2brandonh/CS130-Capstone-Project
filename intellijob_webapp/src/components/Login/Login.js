@@ -1,7 +1,11 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
+import { getAuth, logInWithEmailAndPassword } from "../firebase";
+import { async } from "@firebase/util";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  let navigate = useNavigate(); 
   const [shownChars, setShownChars] = useState(0)
   const [form, setForm] = useState( //We use an object for state tracking due to the large number of form parameters
     {
@@ -9,7 +13,7 @@ const Login = () => {
       pass: "",
     }
   )
-
+  console.log(getAuth().currentUser)
   const editForm = (e, key) => {
     e.preventDefault();
 
@@ -27,16 +31,18 @@ const Login = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // validate password and set passwordInvalid state accordingly
-    // if (password.length < 8) {
-    //     setPasswordInvalid(true);
-    // } else {
-    //     setPasswordInvalid(false);
-    // }
-}
+    try {
+      await logInWithEmailAndPassword(form.email, form.pass).then(() => {
+        navigate("/saved");
+      })
+    } catch (error) {
+      console.log(error)
+      alert(error.message)
+    }
+  }
 
   const HeroPlaceholder = "We're glad to have you back with us."
 

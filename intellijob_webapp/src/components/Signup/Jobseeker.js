@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import styled, {keyframes} from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { registerJobseekerWithEmailAndPassword } from "../firebase";
+import JobseekerHome from "../Jobseeker/JobseekerHome";
 
 const Jobseeker = () => {
+
+    let navigate = useNavigate();
     const [form, setForm] = useState( //We use an object for state tracking due to the large number of form parameters
         {
             first: "",
@@ -15,15 +20,24 @@ const Jobseeker = () => {
         }
     )
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // validate password and set passwordInvalid state accordingly
-        // if (password.length < 8) {
-        //     setPasswordInvalid(true);
-        // } else {
-        //     setPasswordInvalid(false);
-        // }
+        if (form.pass !== form.pass2) {
+          alert("Passwords must match");// setPasswordInvalid(true);
+        } else {
+            try {
+              await registerJobseekerWithEmailAndPassword(form.first, form.last, form.industry, form.yoe, form.description, form.email, form.pass).then(() => {
+                navigate("/saved");
+              })
+              
+            } catch (error) {
+              console.log(error)
+              alert(error.message)
+            }
+         }  
+      
     }
 
     const editForm = (e, key) => {

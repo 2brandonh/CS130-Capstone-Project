@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled, {keyframes} from "styled-components";
+import { registerEmployerWithEmailAndPassword } from "../firebase";
 
 const Employer = () => {
+    let navigate = useNavigate();
     const [form, setForm] = useState( //We use an object for state tracking due to the large number of form parameters
         {
             first: "",
@@ -13,16 +16,21 @@ const Employer = () => {
             pass2: ""
         }
     )
-
-    const handleSubmit = (e) => {
+    console.log(form)
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // validate password and set passwordInvalid state accordingly
-        // if (password.length < 8) {
-        //     setPasswordInvalid(true);
-        // } else {
-        //     setPasswordInvalid(false);
-        // }
+        if (form.pass === form.pass2)
+        {
+          try {
+            await registerEmployerWithEmailAndPassword(form.first, form.last, form.company, form.industry, form.email, form.pass)
+            .then(() => {
+              navigate("/employer")
+            })
+          } catch (error) {
+            console.log(error.message)
+          }
+        }
     }
 
     const editForm = (e, key) => {
@@ -46,8 +54,8 @@ const Employer = () => {
                     <StyledInput type="text" value={form.last} placeholder={"Last Name"} onChange={(e) => editForm(e, "last")} />
 
                     <StyledRow>
-                        <StyledInput type="text" value={form.yoe} placeholder={"Company"} onChange={e => editForm(e, "yoe")}/>
-                        <StyledInput type="text" value={form.company} placeholder={"Industry"} onChange={e => editForm(e, "company")} />
+                        <StyledInput type="text" value={form.company} placeholder={"Company"} onChange={e => editForm(e, "company")}/>
+                        <StyledInput type="text" value={form.industry} placeholder={"Industry"} onChange={e => editForm(e, "industry")} />
                     </StyledRow>
 
                     <StyledInput type="text" value={form.email} placeholder={"Email"} onChange={(e) => editForm(e, "email")} />
