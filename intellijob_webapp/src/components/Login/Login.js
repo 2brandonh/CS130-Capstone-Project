@@ -1,11 +1,9 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
-import { getAuth, logInWithEmailAndPassword } from "../firebase";
-import { async } from "@firebase/util";
+import { logInWithEmailAndPassword } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  let navigate = useNavigate(); 
   const [shownChars, setShownChars] = useState(0)
   const [form, setForm] = useState( //We use an object for state tracking due to the large number of form parameters
     {
@@ -13,6 +11,8 @@ const Login = () => {
       pass: "",
     }
   )
+
+  let navigate = useNavigate();
 
   const editForm = (e, key) => {
     e.preventDefault();
@@ -27,33 +27,28 @@ const Login = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setShownChars(c => c + 1)
-    }, 22); //should be 40
+    }, 30); //should be 40
     return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // validate email and password
+
     try {
       await logInWithEmailAndPassword(form.email, form.pass).then((result) => {
-        const auth = getAuth();
-        let user = auth.currentUser;
-        console.log(user)
-        if (result && getAuth().currentUser.displayName.includes("Employer: "))
-        {
-          navigate("/employer");
+        if (result){
+          navigate("/");
         }
-        if (result && getAuth().currentUser.displayName.includes("Jobseeker: "))
-        {
-          navigate("/jobseeker");
-        }
-          
       })
+
     } catch (error) {
       console.log(error)
       alert(error.message)
     }
   }
+
 
   const HeroPlaceholder = "We're glad to have you back with us."
 
@@ -75,6 +70,7 @@ const Login = () => {
     </HeroWrapper>
   )
 }
+
 
 const HeroWrapper = styled.section`
   display: flex;

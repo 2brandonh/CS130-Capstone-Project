@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
 getAuth,
+onAuthStateChanged,
 updateProfile,
 signInWithEmailAndPassword,
 createUserWithEmailAndPassword,
@@ -29,7 +30,8 @@ const db = getFirestore(app);
 
 const logInWithEmailAndPassword = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const res = await signInWithEmailAndPassword(auth, email, password);
+      console.log(res)
       return true
     } catch (err) {
       console.error(err);
@@ -50,10 +52,11 @@ const logInWithEmailAndPassword = async (email, password) => {
         yoe,
         description,
         authProvider: "local",
+        type: "jobseeker",
         email,
       }).then(() => {
         updateProfile(auth.currentUser, {
-          displayName: "Jobseeker: " + first,
+          displayName: "Jobseeker:" + first,
         })
       });
       return true
@@ -74,10 +77,11 @@ const logInWithEmailAndPassword = async (email, password) => {
         company,
         industry,
         authProvider: "local",
+        type: "employer",
         email,
       }).then(() => {
         updateProfile(auth.currentUser, {
-          displayName: "Employer: "+ first,
+          displayName: "Employer:" + first,
         })
       });
       return true

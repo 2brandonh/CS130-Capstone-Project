@@ -30,7 +30,7 @@ const Jobseeker = () => {
             try {
               await registerJobseekerWithEmailAndPassword(form.first, form.last, form.industry, form.yoe, form.description, form.email, form.pass).then((result) => {
                 if (result)
-                  navigate("/jobseeker");
+                  navigate("/");
               })
               
             } catch (error) {

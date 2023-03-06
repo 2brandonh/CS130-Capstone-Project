@@ -22,11 +22,6 @@ const Navbar = (props) => {
         let path = `login`; 
         navigate(path);
       }
-    
-    const logoutUser = () => {
-        logout();
-        navigate("/");
-    }
 
     return(
         <Nav>
