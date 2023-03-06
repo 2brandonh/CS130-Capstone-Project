@@ -32,8 +32,9 @@ app.post('/createJob', async (req, res) => {
   // TODO any preprocessing??
 
   const data = req.body
-  await Jobs.add({data})
-  res.send({msg: "Job added"})
+  const response = await Jobs.add({data})
+
+  res.send(response)
 
   // request.post({ headers: {'content-type' : 'application/json'}, url: url, body: req.body }, 
   //   (error, response, body) => {
@@ -43,18 +44,28 @@ app.post('/createJob', async (req, res) => {
   // res.send('Success');
 });
 
-app.post('/deleteJob', cors(), (req, res) => {
+app.get('/fetchJobs', async (req, res) => {
+  console.log('got fetch jobs request')
+  const response = await Jobs.get()
+  console.log(response.docs.map(doc => doc.data()))
+  res.send(response.docs.map(doc => doc.data())) // this returns all the docs for jobs
+})
+
+app.post('/deleteJob', (req, res) => {
   res.send('Hello World!')
 });
 
-app.get('/fetchBookmarkedJobs', cors(), (req, res) => {
+app.get('/fetchBookmarkedJobs', (req, res) => {
   res.send('TODO')
 });
 
-app.get('/fetchCreatedJobs', cors(), (req, res) => {
-  res.send('TODO')
+app.get('/fetchCreatedJobs', async (req, res) => {
+  // gets jobs created by an employer
+  // const data = req.body
+  const response = await Jobs.get()
+  res.send(response)
 });
 
-app.get('/fetchRecommendedJobs', cors(), (req, res) => {
+app.get('/fetchRecommendedJobs', (req, res) => {
   res.send('TODO')
 });
