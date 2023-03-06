@@ -2,10 +2,13 @@ import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const CreateJob = ({user, name}) => {
+const API_URL = "http://localhost:3001/"
+
+const CreateJob = ({ user, name }) => {
   const [shownChars, setShownChars] = useState(0)
   const [form, setForm] = useState( //We use an object for state tracking due to the large number of form parameters
     {
+      company: "",
       position: "",
       description: "",
       location: "",
@@ -36,34 +39,56 @@ const CreateJob = ({user, name}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log({...form, user_id: user.uid})
 
-    // validate email and password
+    const requestOptions = {
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin':'*'
+      },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({...form, user_id: user.uid}) //using destructuring
+    };
 
-
+    try {
+    const res = await fetch(API_URL + 'createJob', requestOptions)
+    console.log(res)
+    const json = await res.json()
+    console.log(json)
+    }
+    catch (err){
+      console.log(err)
+    }
+      // .then(response => console.log(response.json()))
+      // .then(data => console.log(data));
   }
+  // validate email and password
 
 
-  const HeroPlaceholder = name + ", we're excited for you to tell us about your new position."
 
-  return (
-    <HeroWrapper>
-      <Hero>
-        <h1> {HeroPlaceholder.substring(0, shownChars)} </h1>
-        {shownChars >= HeroPlaceholder.length + 10 &&
-          <StyledForm onSubmit={handleSubmit}>
-            <InputWrapper>
-              <StyledInput type="text" value={form.email} placeholder={"Position"} onChange={e => editForm(e, "position")} />
-              <StyledInput type="text" value={form.skills} placeholder={"Skills"} onChange={e => editForm(e, "skills")} />
-              <StyledInput type="text" value={form.comp} placeholder={"Compensation"} onChange={e => editForm(e, "comp")} />
-              <StyledInput type="text" value={form.location} placeholder={"Location"} onChange={e => editForm(e, "location")} />
-              <StyledDesc type="text" value={form.description} placeholder={"Description"} onChange={e => editForm(e, "description")} />
-              <StyledButton type="submit">Sign In</StyledButton>
-            </InputWrapper>
-          </StyledForm>
-        }
-      </Hero>
-    </HeroWrapper>
-  )
+const HeroPlaceholder = name + ", we're excited for you to tell us about your new position."
+
+return (
+  <HeroWrapper>
+    <Hero>
+      <h1> {HeroPlaceholder.substring(0, shownChars)} </h1>
+      {shownChars >= HeroPlaceholder.length + 10 &&
+        <StyledForm onSubmit={handleSubmit}>
+          <InputWrapper>
+            <StyledInput type="text" value={form.email} placeholder={"Position"} onChange={e => editForm(e, "position")} />
+            <StyledInput type="text" value={form.skills} placeholder={"Skills"} onChange={e => editForm(e, "skills")} />
+            <StyledInput type="text" value={form.comp} placeholder={"Compensation"} onChange={e => editForm(e, "comp")} />
+            <StyledInput type="text" value={form.company} placeholder={"Company"} onChange={e => editForm(e, "company")} />
+            <StyledInput type="text" value={form.location} placeholder={"Location"} onChange={e => editForm(e, "location")} />
+            <StyledDesc type="text" value={form.description} placeholder={"Description"} onChange={e => editForm(e, "description")} />
+            <StyledButton type="submit">Submit Job</StyledButton>
+          </InputWrapper>
+        </StyledForm>
+      }
+    </Hero>
+  </HeroWrapper>
+)
 }
 
 
