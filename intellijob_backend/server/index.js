@@ -18,12 +18,12 @@ dotenv.config(); // Configure dotenv to access the env variables
 
 const PORT = process.env.PORT || 8080; // Use this instead of hardcoding it like before
 
-api_key = process.env.REACT_APP_FIREBASE_API_KEY;
-auth_domain = process.env.REACT_APP_FIREBASE_AUTH_DOMAIN;
-project_id = process.env.REACT_APP_FIREBASE_PROJECT_ID;
-storage_bucket = process.env.REACT_APP_FIREBASE_STORAGE_BUCKET;
-messaging_sender_id = process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID;
-app_id = process.env.REACT_APP_FIREBASE_APP_ID;
+const api_key = process.env.REACT_APP_FIREBASE_API_KEY;
+const auth_domain = process.env.REACT_APP_FIREBASE_AUTH_DOMAIN;
+const project_id = process.env.REACT_APP_FIREBASE_PROJECT_ID;
+const storage_bucket = process.env.REACT_APP_FIREBASE_STORAGE_BUCKET;
+const messaging_sender_id = process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID;
+const app_id = process.env.REACT_APP_FIREBASE_APP_ID;
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
