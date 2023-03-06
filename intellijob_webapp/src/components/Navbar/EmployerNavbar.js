@@ -12,10 +12,11 @@ const EmployerNavbar = ({name}) => {
       let path = `signup`; 
       navigate(path);
     }
-    const routeLogin = () =>{ 
-        let path = `login`; 
+
+    const routeCreateJob = () => {
+        let path = `createjob`; 
         navigate(path);
-      }
+    }
     
     const logoutUser = () => {
         navigate("/");
@@ -33,7 +34,7 @@ const EmployerNavbar = ({name}) => {
             </div>} */}
             <div>
             <Static> Welcome, {name} </Static>
-                {/* <Join onClick={routeSaved}>Saved Jobs</Join> */}
+                <Join onClick={routeCreateJob}>Create Job</Join>
                 <Sign onClick={logoutUser}>Sign Out</Sign>
             </div>
         </Nav>

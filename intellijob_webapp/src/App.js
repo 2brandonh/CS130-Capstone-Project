@@ -1,6 +1,6 @@
 import './App.css';
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/DefaultNavbar';
 import UserNavbar from './components/Navbar/UserNavbar';
 import EmployerNavbar from './components/Navbar/EmployerNavbar';
@@ -11,6 +11,7 @@ import EmployerHome from './components/Employer/EmployerHome';
 import UserSavedHome from './components/UserSaved/UserSavedHome';
 import Login from './components/Login/Login';
 import { auth } from './components/firebase.js';
+import CreateJob from './components/CreateJob/CreateJob';
 
 // TODO: redirect home based on user auth
 // TODO: pass in props to Navbar based on auth
@@ -24,7 +25,7 @@ const App = () => {
   useEffect(() => {
     const update = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        console.log(authUser)
+        window.localStorage.setItem('localUser', JSON.stringify(authUser));
         setUser(authUser);
         setRole(authUser.displayName.split(":")[0])
         setName(authUser.displayName.split(":")[1])
@@ -36,46 +37,55 @@ const App = () => {
     });
   }, []);
 
-  const Homepage = () => {
-    if (role === null){
-      return <Home/>
-    }
-    else if (role === "Jobseeker"){
-      return <JobseekerHome name={name} user={user}/>
-    }
-    else if (role === "Employer"){
-      return <EmployerHome name={name} user={user}/>
-    }
+  if (role === null) {
+    return (
+      <div className="App">
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/login' element={<Login />} />
+            <Route path="*"
+              element={<Navigate to="/" replace />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    )
   }
-
-  const getNavbar = () => {
-    if (role === null) {
-      return <Navbar />
-    }
-    else if (role === "Jobseeker") {
-      return <UserNavbar name={name}/>
-    }
-    else if (role === "Employer") {
-      return <EmployerNavbar name={name}/>
-    }
+  else if (role === "Jobseeker") {
+    return (
+      <div className="App">
+        <BrowserRouter>
+          <UserNavbar name={name}/>
+          <Routes>
+            <Route path='/' element={<JobseekerHome name={name} user={user} />} />
+            <Route path='/saved' element={<UserSavedHome name={name} user={user} />} />
+            <Route path="*"
+              element={<Navigate to="/" replace />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    )
   }
-
-  return (
-    <div className="App">
-      <BrowserRouter>
-        {getNavbar()}
-        <Routes>
-          <Route path='/' element={Homepage()} />
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/login' element={<Login />} />
-
-          <Route path='/jobseeker' element={<JobseekerHome />} />
-          <Route path='/employer' element={<EmployerHome />} />
-          <Route path='/saved' element={<UserSavedHome />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+  else if (role === "Employer") {
+    return (
+      <div className="App">
+        <BrowserRouter>
+          <EmployerNavbar name={name}/>
+          <Routes>
+            <Route path='/' element={<EmployerHome name={name} user={user} />} />
+            <Route path='/createjob' element={<CreateJob name={name} user={user} />} />
+            <Route path="*"
+              element={<Navigate to="/" replace />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    )
+  }
 }
 
 // jobseeker and employer endpoints will be removed in the future to be based on user type
