@@ -21,15 +21,15 @@ app.listen(PORT, () => {
 
 app.post('/createJob', async (req, res) => {
   console.log(req)
-  const company = req.body.company;
-  const position = req.body.position;
-  const description = req.body.description;
-  const location = req.body.location;
-  const skills = req.body.skills;
-  const comp = req.body.comp;
-  const user_id = req.body.userID;
+  // const company = req.body.company;
+  // const position = req.body.position;
+  // const description = req.body.description;
+  // const location = req.body.location;
+  // const skills = req.body.skills;
+  // const comp = req.body.comp;
+  // const user_id = req.body.userID;
 
-  // TODO any preprocessing??
+  // TODO: DaVinci -> Brandon
 
   const data = req.body
   const response = await Jobs.add({data})
@@ -45,27 +45,38 @@ app.post('/createJob', async (req, res) => {
 });
 
 app.get('/fetchJobs', async (req, res) => {
+  // TODO -> Syed
+  // request will have the user id (uid)
+  // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
+
   console.log('got fetch jobs request')
   const response = await Jobs.get()
-  console.log(response.docs.map(doc => doc.data()))
-  res.send(response.docs.map(doc => doc.data())) // this returns all the docs for jobs
+  const jobs = response.docs.map(doc => {doc.data(), doc.id()}) // this returns all the docs for jobs
+
+  // TODO -> return jobs sorted by relevance
+
+  // console.log(response.docs.map(doc => doc.data()))
+  res.send(jobs) // this returns all the docs for jobs
 })
 
 app.post('/deleteJob', (req, res) => {
+  // TODO -> Syed
+  // req will have job id
   res.send('Hello World!')
 });
 
 app.get('/fetchBookmarkedJobs', (req, res) => {
+  // TODO -> Justin
+  // req will have uid (jobseeker)
+  // retrieve from the Users colelction the user, and their array of bookmarked jobs
+  // return the jobs that are bookmarked
   res.send('TODO')
 });
 
 app.get('/fetchCreatedJobs', async (req, res) => {
-  // gets jobs created by an employer
-  // const data = req.body
+  // TODO -> Justin
+  // req will have uid (employer)
+  // return the jobs that the employer created
   const response = await Jobs.get()
   res.send(response)
-});
-
-app.get('/fetchRecommendedJobs', (req, res) => {
-  res.send('TODO')
 });
