@@ -59,10 +59,14 @@ app.get('/fetchJobs', async (req, res) => {
   res.send(jobs) // this returns all the docs for jobs
 })
 
-app.post('/deleteJob', (req, res) => {
-  // TODO -> Syed
-  // req will have job id
-  res.send('Hello World!')
+app.post('/deleteJob', async (req, res) => {
+  console.log(req);
+  const job_id = req.body.jobID;
+  const user_id = req.body.userID;
+
+  const fb_res = await Jobs.doc(job_id).delete();
+  console.log(fb_res);
+  res.send(fb_res);
 });
 
 app.get('/fetchBookmarkedJobs', (req, res) => {
