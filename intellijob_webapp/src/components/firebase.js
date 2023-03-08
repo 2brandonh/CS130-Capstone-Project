@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {
 getAuth,
-onAuthStateChanged,
 updateProfile,
 signInWithEmailAndPassword,
 createUserWithEmailAndPassword,
@@ -11,7 +10,7 @@ signOut,
 import {
 getFirestore,
 collection,
-setDoc,
+addDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -30,8 +29,7 @@ const db = getFirestore(app);
 
 const logInWithEmailAndPassword = async (email, password) => {
     try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
-      console.log(res)
+      await signInWithEmailAndPassword(auth, email, password);
       return true
     } catch (err) {
       console.error(err);
@@ -44,7 +42,7 @@ const logInWithEmailAndPassword = async (email, password) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, pass);
       const user = res.user;
-      await setDoc(collection(db, "Jobseekers", res.user), {
+      await addDoc(collection(db, "Jobseekers"), {
         uid: user.uid,
         first, 
         last,
@@ -52,11 +50,10 @@ const logInWithEmailAndPassword = async (email, password) => {
         yoe,
         description,
         authProvider: "local",
-        type: "jobseeker",
         email,
       }).then(() => {
         updateProfile(auth.currentUser, {
-          displayName: "Jobseeker:" + first,
+          displayName: "Jobseeker: " + first,
         })
       });
       return true
@@ -70,18 +67,17 @@ const logInWithEmailAndPassword = async (email, password) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const user = res.user;
-      await setDoc(collection(db, "Employers", res.user), {
+      await addDoc(collection(db, "Employers"), {
         uid: user.uid,
         first, 
         last,
         company,
         industry,
         authProvider: "local",
-        type: "employer",
         email,
       }).then(() => {
         updateProfile(auth.currentUser, {
-          displayName: "Employer:" + first,
+          displayName: "Employer: "+ first,
         })
       });
       return true

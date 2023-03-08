@@ -15,7 +15,7 @@ const UserSavedListing = ({jobInfo}) => {
 
                 <Company>
                     <a> {jobInfo.company}</a>
-                    <a> {jobInfo.recruiter}</a>
+                    <a> {jobInfo.email}</a>
                     {/* <a> {jobInfo.posted} </a> */}
                 </Company>
 
