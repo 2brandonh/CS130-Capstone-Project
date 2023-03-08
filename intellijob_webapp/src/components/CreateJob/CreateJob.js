@@ -11,7 +11,7 @@ const CreateJob = ({ user, name }) => {
       company: "",
       position: "",
       description: "",
-      location: "",
+      jobid: "",
       skills: "",
       comp: "",
       user_id: ""
@@ -76,11 +76,11 @@ return (
       {shownChars >= HeroPlaceholder.length + 10 &&
         <StyledForm onSubmit={handleSubmit}>
           <InputWrapper>
-            <StyledInput type="text" value={form.email} placeholder={"Position"} onChange={e => editForm(e, "position")} />
+            <StyledInput type="text" value={form.email} placeholder={"Position Title"} onChange={e => editForm(e, "position")} />
             <StyledInput type="text" value={form.skills} placeholder={"Skills"} onChange={e => editForm(e, "skills")} />
             <StyledInput type="text" value={form.comp} placeholder={"Compensation"} onChange={e => editForm(e, "comp")} />
             <StyledInput type="text" value={form.company} placeholder={"Company"} onChange={e => editForm(e, "company")} />
-            <StyledInput type="text" value={form.location} placeholder={"Location"} onChange={e => editForm(e, "location")} />
+            <StyledInput type="text" value={form.location} placeholder={"Job ID"} onChange={e => editForm(e, "jobid")} />
             <StyledDesc type="text" value={form.description} placeholder={"Description"} onChange={e => editForm(e, "description")} />
             <StyledButton type="submit">Submit Job</StyledButton>
           </InputWrapper>

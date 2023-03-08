@@ -11,7 +11,7 @@ signOut,
 import {
 getFirestore,
 collection,
-addDoc,
+setDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -44,7 +44,7 @@ const logInWithEmailAndPassword = async (email, password) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, pass);
       const user = res.user;
-      await addDoc(collection(db, "Jobseekers"), {
+      await setDoc(collection(db, "Jobseekers", res.user), {
         uid: user.uid,
         first, 
         last,
@@ -70,7 +70,7 @@ const logInWithEmailAndPassword = async (email, password) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const user = res.user;
-      await addDoc(collection(db, "Employers"), {
+      await setDoc(collection(db, "Employers", res.user), {
         uid: user.uid,
         first, 
         last,
