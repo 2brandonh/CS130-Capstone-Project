@@ -47,7 +47,7 @@ app.post('/createJob', async (req, res) => {
 
 app.get('/fetchJobs', async (req, res) => {
   // TODO -> Syed
-  // request will have the user id (uid)
+  // request will have the "uid" (jobseeker)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
 
   console.log('got fetch jobs request')
@@ -58,6 +58,12 @@ app.get('/fetchJobs', async (req, res) => {
 
   // console.log(response.docs.map(doc => doc.data()))
   res.send(jobs) // this returns all the docs for jobs
+})
+
+apps.get('/fetchCreatedJobs', async (req, res) => {
+  // TODO
+  // request will have a "uid" (employer)
+  // retrieve all jobs created by the employer
 })
 
 app.post('/deleteJob', async (req, res) => {
