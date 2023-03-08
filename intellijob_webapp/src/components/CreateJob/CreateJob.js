@@ -8,13 +8,13 @@ const CreateJob = ({ user, name }) => {
   const [shownChars, setShownChars] = useState(0)
   const [form, setForm] = useState( //We use an object for state tracking due to the large number of form parameters
     {
-      company: "",
+      location: "",
       position: "",
       description: "",
-      location: "",
+      jobid: "",
       skills: "",
       comp: "",
-      user_id: ""
+      uid: ""
     }
   )
 
@@ -48,7 +48,7 @@ const CreateJob = ({ user, name }) => {
       },
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({...form, user_id: user.uid}) //using destructuring
+      body: JSON.stringify({...form, uid: user.uid}) //using destructuring
     };
 
     try {
@@ -76,11 +76,11 @@ return (
       {shownChars >= HeroPlaceholder.length + 10 &&
         <StyledForm onSubmit={handleSubmit}>
           <InputWrapper>
-            <StyledInput type="text" value={form.email} placeholder={"Position"} onChange={e => editForm(e, "position")} />
+            <StyledInput type="text" value={form.email} placeholder={"Position Title"} onChange={e => editForm(e, "position")} />
             <StyledInput type="text" value={form.skills} placeholder={"Skills"} onChange={e => editForm(e, "skills")} />
             <StyledInput type="text" value={form.comp} placeholder={"Compensation"} onChange={e => editForm(e, "comp")} />
-            <StyledInput type="text" value={form.company} placeholder={"Company"} onChange={e => editForm(e, "company")} />
             <StyledInput type="text" value={form.location} placeholder={"Location"} onChange={e => editForm(e, "location")} />
+            <StyledInput type="text" value={form.jobid} placeholder={"Job ID"} onChange={e => editForm(e, "jobid")} />
             <StyledDesc type="text" value={form.description} placeholder={"Description"} onChange={e => editForm(e, "description")} />
             <StyledButton type="submit">Submit Job</StyledButton>
           </InputWrapper>
