@@ -20,28 +20,29 @@ app.listen(PORT, () => {
 });
 
 app.post('/createJob', async (req, res) => {
-  console.log(req)
+  let payload = req.body
+  payload.skills = payload.skills.split(',')
   // const company = req.body.company;
   // const position = req.body.position;
   // const description = req.body.description;
   // const location = req.body.location;
   // const skills = req.body.skills;
   // const comp = req.body.comp;
-  // const user_id = req.body.userID;
+  // const uid = req.body.uid;
 
   // TODO: DaVinci -> Brandon
 
-  const data = req.body
-  const response = await Jobs.add({data})
+  let employers = await Employers.get() //gets all employers
+  employers = employers.docs.map(doc => doc.data())
 
-  res.send(response)
+  const recruiter = employers.filter((employer) => employer.uid == payload.uid)[0] //filtering: gets the recruiter corresponding to the same uid
+  console.log(recruiter)
 
-  // request.post({ headers: {'content-type' : 'application/json'}, url: url, body: req.body }, 
-  //   (error, response, body) => {
-  //      console.log(body);
-  //   });
-
-  // res.send('Success');
+  payload.company = recruiter.company
+  payload.email = recruiter.email
+  console.log(payload)
+  const response = await Jobs.add(payload)
+  res.send(response);
 });
 
 app.get('/fetchJobs', async (req, res) => {
