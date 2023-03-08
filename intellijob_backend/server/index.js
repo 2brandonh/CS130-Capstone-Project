@@ -51,7 +51,7 @@ app.get('/fetchJobs', async (req, res) => {
 
   console.log('got fetch jobs request')
   const response = await Jobs.get()
-  const jobs = response.docs.map(doc => {doc.data(), doc.id()}) // this returns all the docs for jobs
+  const jobs = response.docs.map(doc => ({...doc.data(), id: doc.id})) // this returns all the docs for jobs
 
   // TODO -> return jobs sorted by relevance
 
