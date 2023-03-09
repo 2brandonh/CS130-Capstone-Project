@@ -2,8 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const {Jobs, Employers, Jobseekers} = require("./config");
 const dotenv = require("dotenv").config();
+const { Configuration, OpenAIApi } = require("openai");
 
 const app = express();
+
+const configuration = new Configuration({
+  apiKey: process.env.REACT_APP_OPENAI_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 app.use(cors());
 app.use(express.json());
@@ -45,6 +51,35 @@ app.post('/createJob', async (req, res) => {
   res.send(response);
 });
 
+app.post('/resumeReview', async (req, res) => {
+  let jobseekers = await Jobseekers.get() //gets all users
+  jobseekers = jobseekers.docs.map(doc => doc.data())
+  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0] //filtering: gets the jobseeker corresponding to the same uid
+
+  console.log(jobseeker)
+  console.log('received resume review request')
+  const promptWrapper = `
+  The following is a resume created by a person who works in the ${jobseeker.industry} industry. 
+  Please provide a detailed critique of their resume in addition to suggested improvements.
+  Focus on the technical aspects and act supportively. If it helps, include bullet points and explicitly show what changes should be made.
+
+  ${req.body.resume}
+  `
+  const response = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: promptWrapper,
+    max_tokens: 1000,
+    temperature: 0,
+  });
+  const review = response.data.choices[0].text
+
+  res.send(JSON.stringify(review))
+})
+
+app.post('/coverLetter', async (req, res) => {
+
+})
+
 app.get('/fetchJobs', async (req, res) => {
   // TODO -> Syed
   // request will have the "uid" (jobseeker)
@@ -60,7 +95,7 @@ app.get('/fetchJobs', async (req, res) => {
   res.send(jobs) // this returns all the docs for jobs
 })
 
-apps.get('/fetchCreatedJobs', async (req, res) => {
+app.get('/fetchCreatedJobs', async (req, res) => {
   // TODO
   // request will have a "uid" (employer)
   // retrieve all jobs created by the employer
