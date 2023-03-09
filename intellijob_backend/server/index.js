@@ -53,6 +53,28 @@ app.post('/createJob', async (req, res) => {
   res.send(response);
 });
 
+app.post('/jobseekerTagging', async(req, res) => {
+  console.log('received jobseeker tagging request')
+  const promptWrapper = `
+  The following is a passage written by a jobseeker who works in the ${req.body.industry} industry. 
+  The passage describes the jobseeker's ideal job and their background.
+  Provide a detailed list of their key technical and soft skills.
+  Return this list as an array, with each skill written as a string.
+
+  ${req.body.ideal}
+  `
+
+  const response = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: promptWrapper,
+    max_tokens: 1000,
+    temperature: 0,
+  });
+  const review = response.data.choices[0].text
+  console.log(review)
+  res.send(JSON.stringify(review))
+})
+
 
 app.post('/resumeReview', async (req, res) => {
   let jobseekers = await Jobseekers.get() //gets all users
@@ -66,7 +88,7 @@ app.post('/resumeReview', async (req, res) => {
   Please provide a detailed critique of their resume in addition to suggested improvements.
   Focus on the technical aspects and act supportively. If it helps, include bullet points and explicitly show what changes should be made.
 
-  ${req.body.resume}
+  ${req.body.description}
   `
   const response = await openai.createCompletion({
     model: "text-davinci-003",
@@ -90,9 +112,11 @@ app.post('/fetchJobs', async (req, res) => {
   // request will have the "uid" (jobseeker)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
   console.log('got fetch jobs request')
-  const user_id = req.body.userID;
-  const tags_res = await Jobseekers.doc(user_id).get();
-  const tags = tags_res.data().tags;
+  let jobseekers = await Jobseekers.get() //gets all users
+  jobseekers = jobseekers.docs.map(doc => doc.data())
+  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0] //filtering: gets the jobseeker corresponding to the same uid
+
+  const tags = jobseeker.tags; //Array of tags for the current jobseeker
 
   var relevance = {};
   var id_to_data = {};
@@ -146,7 +170,7 @@ app.post('/fetchCreatedJobs', async (req, res) => {
   // retrieve all jobs created by the employer
   const user_id = req.body.uid;
 
-  const response = await Jobs.where("uid", "==", user_id).get();
+  const response = await Jobs.where("uid", "==", uid).get();
   const data = response.docs.map(doc => doc.data());
   console.log(data);
   res.send(data);
@@ -154,10 +178,10 @@ app.post('/fetchCreatedJobs', async (req, res) => {
 
 app.post('/deleteJob', async (req, res) => {
   console.log(req);
-  const job_id = req.body.jobID;
-  const user_id = req.body.userID;
+  const jobid = req.body.jobid;
+  const uid = req.body.uid;
 
-  const fb_res = await Jobs.doc(job_id).delete();
+  const fb_res = await Jobs.doc(jobid).delete();
   console.log(fb_res);
   res.send(fb_res);
 });
