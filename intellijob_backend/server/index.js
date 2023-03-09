@@ -1,9 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 const {Jobs, Employers, Jobseekers} = require("./config");
+const { request } = require("express");
+const Request = require("request/request");
 const dotenv = require("dotenv").config();
+const { Configuration, OpenAIApi } = require("openai");
 
 const app = express();
+
+const configuration = new Configuration({
+  apiKey: process.env.REACT_APP_OPENAI_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 app.use(cors());
 app.use(express.json());
@@ -20,38 +28,69 @@ app.listen(PORT, () => {
 });
 
 app.post('/createJob', async (req, res) => {
-  console.log(req)
+  let payload = req.body
+  payload.skills = payload.skills.split(',')
   // const company = req.body.company;
   // const position = req.body.position;
   // const description = req.body.description;
   // const location = req.body.location;
   // const skills = req.body.skills;
   // const comp = req.body.comp;
-  // const user_id = req.body.userID;
+  // const uid = req.body.uid;
 
   // TODO: DaVinci -> Brandon
 
-  const data = req.body
-  const response = await Jobs.add({data})
+  let employers = await Employers.get() //gets all employers
+  employers = employers.docs.map(doc => doc.data())
 
-  res.send(response)
+  const recruiter = employers.filter((employer) => employer.uid == payload.uid)[0] //filtering: gets the recruiter corresponding to the same uid
+  console.log(recruiter)
 
-  // request.post({ headers: {'content-type' : 'application/json'}, url: url, body: req.body }, 
-  //   (error, response, body) => {
-  //      console.log(body);
-  //   });
-
-  // res.send('Success');
+  payload.company = recruiter.company
+  payload.email = recruiter.email
+  console.log(payload)
+  const response = await Jobs.add(payload)
+  res.send(response);
 });
+
+
+app.post('/resumeReview', async (req, res) => {
+  let jobseekers = await Jobseekers.get() //gets all users
+  jobseekers = jobseekers.docs.map(doc => doc.data())
+  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0] //filtering: gets the jobseeker corresponding to the same uid
+
+  console.log(jobseeker)
+  console.log('received resume review request')
+  const promptWrapper = `
+  The following is a resume created by a person who works in the ${jobseeker.industry} industry. 
+  Please provide a detailed critique of their resume in addition to suggested improvements.
+  Focus on the technical aspects and act supportively. If it helps, include bullet points and explicitly show what changes should be made.
+
+  ${req.body.resume}
+  `
+  const response = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: promptWrapper,
+    max_tokens: 1000,
+    temperature: 0,
+  });
+  const review = response.data.choices[0].text
+
+  res.send(JSON.stringify(review))
+})
+
+app.post('/coverLetter', async (req, res) => {
+
+})
 
 // TODO add this to request?
 const MAX_FETCH_JOBS = 10;
 
 app.post('/fetchJobs', async (req, res) => {
-  // request will have the user id (uid)
+  // TODO -> Syed
+  // request will have the "uid" (jobseeker)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
   console.log('got fetch jobs request')
-
   const user_id = req.body.userID;
   const tags_res = await Jobseekers.doc(user_id).get();
   const tags = tags_res.data().tags;
@@ -103,6 +142,12 @@ app.post('/fetchJobs', async (req, res) => {
   res.send(output);
 })
 
+app.get('/fetchCreatedJobs', async (req, res) => {
+  // TODO
+  // request will have a "uid" (employer)
+  // retrieve all jobs created by the employer
+})
+
 app.post('/deleteJob', async (req, res) => {
   console.log(req);
   const job_id = req.body.jobID;
@@ -116,7 +161,10 @@ app.post('/deleteJob', async (req, res) => {
 app.get('/fetchBookmarkedJobs', (req, res) => {
   // TODO -> Justin
   // req will have uid (jobseeker)
-  // retrieve from the Users colelction the user, and their array of bookmarked jobs
+  const jobseeker = req.body.uid;
+  // retrieve from the Users collection the user, and their array of bookmarked jobs
+  // const response = await 
+
   // return the jobs that are bookmarked
   res.send('TODO')
 });
@@ -124,7 +172,10 @@ app.get('/fetchBookmarkedJobs', (req, res) => {
 app.get('/fetchCreatedJobs', async (req, res) => {
   // TODO -> Justin
   // req will have uid (employer)
+  const employer = req.body.uid;
+  
   // return the jobs that the employer created
-  const response = await Jobs.get()
-  res.send(response)
+  const response = await Jobs.where("uid", "==", employer).get();
+  const jobs = response.docs.map(doc => ({...doc.data(), id: doc.id}));
+  res.send(jobs);
 });
