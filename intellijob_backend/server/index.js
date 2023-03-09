@@ -44,19 +44,63 @@ app.post('/createJob', async (req, res) => {
   // res.send('Success');
 });
 
-app.get('/fetchJobs', async (req, res) => {
-  // TODO -> Syed
+// TODO add this to request?
+const MAX_FETCH_JOBS = 10;
+
+app.post('/fetchJobs', async (req, res) => {
   // request will have the user id (uid)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
-
   console.log('got fetch jobs request')
-  const response = await Jobs.get()
-  const jobs = response.docs.map(doc => {doc.data(), doc.id()}) // this returns all the docs for jobs
 
-  // TODO -> return jobs sorted by relevance
+  const user_id = req.body.userID;
+  const tags_res = await Jobseekers.doc(user_id).get();
+  const tags = tags_res.data().tags;
 
-  // console.log(response.docs.map(doc => doc.data()))
-  res.send(jobs) // this returns all the docs for jobs
+  var relevance = {};
+  var id_to_data = {};
+
+  const response = await Jobs.where("skills", "array-contains-any", tags).get();
+  response.docs.forEach(doc => {
+    const data = doc.data();
+    const id = doc.id;
+
+    // TODO add weighting for each tag/skill based on order?
+    var rel = 0;
+    tags.forEach((user_tag) => {
+      if (data.skills.includes(user_tag)) {
+        rel++;
+      }
+    });
+
+    if (id in relevance) {
+      relevance[id] += rel;
+    } else {
+      relevance[id] = rel;
+      id_to_data[id] = data;
+    }
+  });
+
+  let sortable = [];
+  for (var id in relevance) {
+    sortable.push([id, relevance[id]]);
+  }
+
+  sortable.sort(function(a, b) {
+    return b[1] - a[1];
+  });
+
+  console.log(relevance);
+  console.log(sortable);
+
+  // return jobs sorted by relevance
+  var output = sortable.map(x => id_to_data[x[0]]);
+
+  if (output.length > MAX_FETCH_JOBS){
+    output = output.slice(0, MAX_FETCH_JOBS);
+  }
+
+  console.log(output);
+  res.send(output);
 })
 
 app.post('/deleteJob', async (req, res) => {
