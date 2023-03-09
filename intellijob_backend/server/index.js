@@ -87,7 +87,6 @@ app.post('/coverLetter', async (req, res) => {
 const MAX_FETCH_JOBS = 10;
 
 app.post('/fetchJobs', async (req, res) => {
-  // TODO -> Syed
   // request will have the "uid" (jobseeker)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
   console.log('got fetch jobs request')
@@ -142,10 +141,15 @@ app.post('/fetchJobs', async (req, res) => {
   res.send(output);
 })
 
-app.get('/fetchCreatedJobs', async (req, res) => {
-  // TODO
+app.post('/fetchCreatedJobs', async (req, res) => {
   // request will have a "uid" (employer)
   // retrieve all jobs created by the employer
+  const user_id = req.body.uid;
+
+  const response = await Jobs.where("uid", "==", user_id).get();
+  const data = response.docs.map(doc => doc.data());
+  console.log(data);
+  res.send(data);
 })
 
 app.post('/deleteJob', async (req, res) => {
