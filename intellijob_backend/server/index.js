@@ -72,19 +72,24 @@ app.post('/deleteJob', async (req, res) => {
   res.send(fb_res);
 });
 
-app.get('/fetchBookmarkedJobs', (req, res) => {
-  // TODO -> Justin
+app.get('/fetchBookmarkedJobs', async (req, res) => {
   // req will have uid (jobseeker)
-  const jobseeker = req.body.uid;
-  // retrieve from the Users collection the user, and their array of bookmarked jobs
-  // const response = await 
 
+  // Fetch jobseeker matching given UID and get bookmarked jobs
+  const jobseeker_id = req.body.uid;
+  const response = await Jobseekers.where("uid", "==", jobseeker_id).get();
+  // jobseeker becomes the bookmarked array (take first element since there should be 1 corresponding jobseeker to the given UID)
+  const bookmarks = response.docs.map(doc => (doc.data().bookmarks))[0];
+
+  // Fetch jobs and then filter by document ID if it exists in bookmarks array
+  let jobs = await Jobs.where("__name__", "in", bookmarks).get();
+  jobs = jobs.docs.map(doc => ({...doc.data(), id: doc.id}));
+  
   // return the jobs that are bookmarked
-  res.send('TODO')
+  res.send(jobs);
 });
 
 app.get('/fetchCreatedJobs', async (req, res) => {
-  // TODO -> Justin
   // req will have uid (employer)
   const employer = req.body.uid;
   
