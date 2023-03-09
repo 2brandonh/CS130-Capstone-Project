@@ -6,7 +6,7 @@ const API_URL = "http://localhost:3001/"
 
 // This controls the layout and mapping of jobs on a page
 
-const JobLayout = () => {
+const JobLayout = ({user}) => {
   const [jobData, setJobData] = useState([])
 
   useEffect(() => {
@@ -16,7 +16,9 @@ const JobLayout = () => {
       headers: {
         'Access-Control-Allow-Origin':'*'
       },
-      method: 'GET',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({uid: user.uid})
     };
 
     // declare the data fetching function

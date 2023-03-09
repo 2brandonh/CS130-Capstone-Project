@@ -31,7 +31,7 @@ const JobseekerHome = ({name, user}) => {
               {/* <Button onClick={() => {}}>Polish resume</Button>
                           <Button onClick={() => {}}>Write cover letter</Button> */}
             </ButtonWrapper>
-            <JobLayout />
+            <JobLayout user={user}/>
           </div>
         )}
       </Hero>
