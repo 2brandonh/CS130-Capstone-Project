@@ -4,6 +4,7 @@ import Navbar from './components/Navbar/DefaultNavbar';
 import Home from "./components/Home"
 import Signup from "./components/Signup/Signup"
 import JobseekerHome from './components/Jobseeker/JobseekerHome';
+import ResumeReview from './components/ResumeReview/ResumeReview';
 
 // TODO: redirect home based on user auth
 // TODO: pass in props to Navbar based on auth
@@ -20,6 +21,7 @@ const App = () => {
 
           <Route path='/jobseeker' element={<JobseekerHome/>}/> 
           <Route path='/employer' />
+          <Route path='/resumereview' element={<ResumeReview/>}/>
         </Routes>
       </BrowserRouter>
     </div>

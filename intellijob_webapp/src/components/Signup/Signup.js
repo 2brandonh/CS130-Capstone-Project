@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+              import styled, { keyframes } from "styled-components";
 import { useState, useEffect} from "react";
 import Employer from './Employer';
 import Jobseeker from "./Jobseeker"
