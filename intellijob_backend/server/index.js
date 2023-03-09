@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const {Jobs, Employers, Jobseekers} = require("./config");
+const { request } = require("express");
+const Request = require("request/request");
 const dotenv = require("dotenv").config();
 
 const app = express();
@@ -73,7 +75,10 @@ app.post('/deleteJob', async (req, res) => {
 app.get('/fetchBookmarkedJobs', (req, res) => {
   // TODO -> Justin
   // req will have uid (jobseeker)
-  // retrieve from the Users colelction the user, and their array of bookmarked jobs
+  const jobseeker = req.body.uid;
+  // retrieve from the Users collection the user, and their array of bookmarked jobs
+  // const response = await 
+
   // return the jobs that are bookmarked
   res.send('TODO')
 });
@@ -81,7 +86,10 @@ app.get('/fetchBookmarkedJobs', (req, res) => {
 app.get('/fetchCreatedJobs', async (req, res) => {
   // TODO -> Justin
   // req will have uid (employer)
+  const employer = req.body.uid;
+  
   // return the jobs that the employer created
-  const response = await Jobs.get()
-  res.send(response)
+  const response = await Jobs.where("uid", "==", employer).get();
+  const jobs = response.docs.map(doc => ({...doc.data(), id: doc.id}));
+  res.send(jobs);
 });
