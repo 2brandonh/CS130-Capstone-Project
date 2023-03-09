@@ -12,6 +12,7 @@ import UserSavedHome from './components/UserSaved/UserSavedHome';
 import Login from './components/Login/Login';
 import { auth } from './components/firebase.js';
 import CreateJob from './components/CreateJob/CreateJob';
+import ResumeReview from './components/ResumeReview/ResumeReview';
 
 // TODO: redirect home based on user auth
 // TODO: pass in props to Navbar based on auth
@@ -46,9 +47,9 @@ const App = () => {
             <Route path='/' element={<Home />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/login' element={<Login />} />
-            <Route path="*"
+            {/* <Route path="*"
               element={<Navigate to="/" replace />}
-            />
+            /> */}
           </Routes>
         </BrowserRouter>
       </div>
@@ -62,6 +63,7 @@ const App = () => {
           <Routes>
             <Route path='/' element={<JobseekerHome name={name} user={user} />} />
             <Route path='/saved' element={<UserSavedHome name={name} user={user} />} />
+            <Route path='/resume' element={<ResumeReview name={name} user={user} />} />
             <Route path="*"
               element={<Navigate to="/" replace />}
             />

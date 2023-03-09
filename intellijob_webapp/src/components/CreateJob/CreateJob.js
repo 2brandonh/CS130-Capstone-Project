@@ -39,7 +39,7 @@ const CreateJob = ({ user, name }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({...form, user_id: user.uid})
+    console.log({...form, uid: user.uid})
 
     const requestOptions = {
       mode: 'cors',

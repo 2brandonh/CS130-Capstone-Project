@@ -4,6 +4,7 @@ getAuth,
 updateProfile,
 signInWithEmailAndPassword,
 createUserWithEmailAndPassword,
+browserSessionPersistence,
 sendPasswordResetEmail,
 signOut,
 } from "firebase/auth";

@@ -13,6 +13,11 @@ const UserNavbar = ({name}) => {
       navigate(path);
     }
 
+    const routeResume = () =>{ 
+        let path = `resume`; 
+        navigate(path);
+      }
+
     const routeSaved = () =>{ 
         let path = `saved`; 
         navigate(path);
@@ -35,6 +40,7 @@ const UserNavbar = ({name}) => {
             <div>
                 <Static> Welcome, {name} </Static>
                 <Join onClick={routeSaved}>Saved Jobs</Join>
+                <Join onClick={routeResume}>Resume Review</Join>
                 <Sign onClick={logoutUser}>Sign Out</Sign>
             </div>
         </Nav>
