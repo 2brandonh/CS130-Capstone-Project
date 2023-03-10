@@ -85,6 +85,7 @@ app.post('/coverLetter', async (req, res) => {
 
 // TODO add this to request?
 const MAX_FETCH_JOBS = 10;
+const MAX_USER_TAGS = 10;
 
 app.post('/fetchJobs', async (req, res) => {
   // request will have the "uid" (jobseeker)
@@ -92,7 +93,7 @@ app.post('/fetchJobs', async (req, res) => {
   console.log('got fetch jobs request')
   const user_id = req.body.userID;
   const tags_res = await Jobseekers.doc(user_id).get();
-  const tags = tags_res.data().tags;
+  const tags = tags_res.data().tags.length > MAX_USER_TAGS ? tags_res.data().tags.slice(0, MAX_USER_TAGS) : tags_res.data().tags;
 
   var relevance = {};
   var id_to_data = {};
@@ -139,17 +140,6 @@ app.post('/fetchJobs', async (req, res) => {
 
   console.log(output);
   res.send(output);
-})
-
-app.post('/fetchCreatedJobs', async (req, res) => {
-  // request will have a "uid" (employer)
-  // retrieve all jobs created by the employer
-  const user_id = req.body.uid;
-
-  const response = await Jobs.where("uid", "==", user_id).get();
-  const data = response.docs.map(doc => doc.data());
-  console.log(data);
-  res.send(data);
 })
 
 app.post('/deleteJob', async (req, res) => {
