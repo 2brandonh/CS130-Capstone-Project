@@ -1,9 +1,40 @@
 import styled, { keyframes } from "styled-components";
-import { useState, useEffect} from "react";
+import { useState, useEffect, useReducer} from "react";
+const API_URL = "http://localhost:3001/"
 
 // This is the individual listing for a job
 
 const JobListing = ({jobInfo}) => {
+    const [isGenerating, setIsGenerating] = useState(false)
+    const [coverLetter, setCoverLetter] = useState('')
+
+    const handleCoverLetter = async (e) => {
+        e.preventDefault()
+        setIsGenerating(true)
+
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+                'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({job_description: jobInfo.description, job_role: jobInfo.position, company: jobInfo.company})
+        };
+        try {
+            
+            const res = await fetch(API_URL + 'coverLetter', requestOptions)
+            
+            console.log(res)
+            const json = await res.json()
+            console.log(json)
+        }
+        catch (err){
+            console.log(err)
+        }
+    }
+
+
 
     return(
         <ListingWrapper>
@@ -32,7 +63,7 @@ const JobListing = ({jobInfo}) => {
                 <ButtonWrapper>
                     <Button onClick={() => { }}>Apply</Button>
                     <Button onClick={() => { }}>Bookmark</Button>
-                    <Button onClick={() => { }}>Cover Letter</Button>
+                    <Button onClick={handleCoverLetter} type="submit">Cover Letter</Button>
                 </ButtonWrapper>
 
             </InnerWrapper>

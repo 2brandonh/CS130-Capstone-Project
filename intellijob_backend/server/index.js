@@ -128,6 +128,43 @@ app.post('/resumeReview', async (req, res) => {
 })
 
 app.post('/coverLetter', async (req, res) => {
+  let jobseekers = await Jobseekers.get()
+  jobseekers = jobseekers.docs.map(doc => doc.data())
+  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0]
+
+  console.log(jobseeker)
+  console.log('received cover letter generator request')
+  const promptWrapper = `
+  Write a cover letter for a user applying for a job given the company, the type of role, the user's ideal job, and the job description.
+  Emphasize the user's suitability for the job.
+
+  Company Name: 
+  ${req.body.company}
+
+  Type of Role:
+  ${req.body.job_role}
+
+  User's Ideal Job:
+    Shashank is a BS/MS student studying Computer Science at UCLA. In the past, Shashank has worked at Umba, a digital banking start-up, and Blend, a SaaS cloud banking platform, in both software engineering and product management roles. He thrives in complex, ambiguous problem spaces where he can define a path through his natural curiosity around unique user problems and business needs. Shashank is now looking for 2023 Product Management Intern opportunities that provide graduates with high levels of ownership, strong mentorship, and a diverse community.
+
+  Job Description:
+  ${req.body.job_description}
+  `
+
+  const response = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: promptWrapper,
+    max_tokens: 1000,
+    temperature: 0,
+  });
+  let cover_letter = response.data.choices[0].text
+
+  console.log(cover_letter)
+
+
+  res.send(JSON.stringify(cover_letter))
+  
+  
 
 })
 
