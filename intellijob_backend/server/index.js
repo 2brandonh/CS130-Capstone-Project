@@ -128,9 +128,9 @@ app.post('/resumeReview', async (req, res) => {
 })
 
 app.post('/coverLetter', async (req, res) => {
-  let jobseekers = await Jobseekers.get()
-  jobseekers = jobseekers.docs.map(doc => doc.data())
-  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0]
+  /* Refactored for scalability */
+  let jobseeker = await Jobseekers.where("uid", "==", req.body.uid).get();
+  jobseeker = jobseeker.docs.map(doc => doc.data())[0];
 
   console.log(jobseeker)
   console.log('received cover letter generator request')
