@@ -1,6 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { useState, useEffect} from "react";
-
+import { useState, useEffect, useReducer} from "react";
 const API_URL = "http://localhost:3001/"
 
 // This is the individual listing for a job
