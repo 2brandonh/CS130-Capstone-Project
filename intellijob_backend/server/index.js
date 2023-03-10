@@ -41,27 +41,51 @@ app.post('/createJob', async (req, res) => {
   // TODO: DaVinci -> Brandon
 
   /* Refactored for scalability */
+  const promptWrapper = `
+  The following is a job position written by a recruiter. 
+  The passage describes the technical requirements and experience required of a candidate.
+  Provide a detailed list of the key techncial skills and experience that a candidate should have for this job.
+  Return this list as an array, with each skill written as a string using double quotes. 
+  The array should be ordered from the most relevant to least relevant. 
+  Each entry in the array should be at most two words.
+  Return only the array in this format and not any other text.
+
+  ${req.body.description}
+  `
+  let jobTag = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: promptWrapper,
+    max_tokens: 1000,
+    temperature: 0,
+  });
+  jobTag = jobTag.data.choices[0].text
+  // console.log(JSON.parse(jobTag))
+  
   let recruiter = await Employers.where("uid", "==", payload.uid).get();
   recruiter = recruiter.docs.map(doc => doc.data())[0];
 
   console.log(recruiter)
-
+  
   payload.company = recruiter.company
   payload.email = recruiter.email
+  payload.tags = await JSON.parse(jobTag).map(word => word.toLowerCase())
   console.log(payload)
-  const response = await Jobs.add(payload)
-  res.send(response);
+
+  const fb_res = await Jobs.add(payload)
+  res.send(fb_res); // Successfully created the new job listing
 });
 
 app.post('/jobseekerTagging', async(req, res) => {
+  console.log(req.body)
   console.log('received jobseeker tagging request')
   const promptWrapper = `
-  The following is a passage written by a jobseeker who works in the ${req.body.industry} industry. 
+  The following is a passage written by a jobseeker in the ${req.body.industry} industry.
   The passage describes the jobseeker's ideal job and their background.
-  Provide a detailed list of their key technical and soft skills.
-  Return this list as an array, with each skill written as a string.
+  Provide a detailed list of their key technical skills.
+  Return this list as an array, with each skill written as a string using double quotes. The array should be ordered from the most relevant to least relevant. Each entry in the array should be at most two words.
+  Return only the array in this format and not any other text.
 
-  ${req.body.ideal}
+  ${req.body.description}
   `
 
   const response = await openai.createCompletion({
@@ -70,8 +94,10 @@ app.post('/jobseekerTagging', async(req, res) => {
     max_tokens: 1000,
     temperature: 0,
   });
-  const review = response.data.choices[0].text
+  let review = response.data.choices[0].text
+  review = await JSON.parse(review).map(word => word.toLowerCase())
   console.log(review)
+
   res.send(JSON.stringify(review))
 })
 
@@ -96,32 +122,75 @@ app.post('/resumeReview', async (req, res) => {
     max_tokens: 1000,
     temperature: 0,
   });
-  const review = response.data.choices[0].text
+  let review = response.data.choices[0].text
 
   res.send(JSON.stringify(review))
 })
 
 app.post('/coverLetter', async (req, res) => {
+  let jobseekers = await Jobseekers.get()
+  jobseekers = jobseekers.docs.map(doc => doc.data())
+  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0]
+
+  console.log(jobseeker)
+  console.log('received cover letter generator request')
+  const promptWrapper = `
+  Write a cover letter for a user applying for a job given the company, the type of role, the user's ideal job, and the job description.
+  Emphasize the user's suitability for the job.
+
+  Company Name: 
+  ${req.body.company}
+
+  Type of Role:
+  ${req.body.job_role}
+
+  User's Ideal Job:
+    Shashank is a BS/MS student studying Computer Science at UCLA. In the past, Shashank has worked at Umba, a digital banking start-up, and Blend, a SaaS cloud banking platform, in both software engineering and product management roles. He thrives in complex, ambiguous problem spaces where he can define a path through his natural curiosity around unique user problems and business needs. Shashank is now looking for 2023 Product Management Intern opportunities that provide graduates with high levels of ownership, strong mentorship, and a diverse community.
+
+  Job Description:
+  ${req.body.job_description}
+  `
+
+  const response = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: promptWrapper,
+    max_tokens: 1000,
+    temperature: 0,
+  });
+  let cover_letter = response.data.choices[0].text
+
+  console.log(cover_letter)
+
+
+  res.send(JSON.stringify(cover_letter))
+  
+  
 
 })
 
 // TODO add this to request?
 const MAX_FETCH_JOBS = 10;
+const MAX_USER_TAGS = 10;
 
 app.post('/fetchJobs', async (req, res) => {
   // request will have the "uid" (jobseeker)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
   console.log('got fetch jobs request')
 
-  /* Refactored for scalability */
-  let jobseeker = await Jobseekers.where("uid", "==", req.body.uid).get();
-  jobseeker = jobseeker.docs.map(doc => doc.data())[0];
-  const tags = jobseeker.tags; //Array of tags for the current jobseeker
+  const user_id = req.body.uid;
 
-  var relevance = {};
+  /* Refactored for scalability */
+  let jobseeker = await Jobseekers.where("uid", "==", user_id).get();
+  jobseeker = jobseeker.docs.map(doc => doc.data())[0];
+
+  const tags = jobseeker.tags.length > MAX_USER_TAGS ? jobseeker.tags.slice(0, MAX_USER_TAGS) : jobseeker.tags;
+
+  console.log(tags);
+
+  var relevance = {}; 
   var id_to_data = {};
 
-  const response = await Jobs.where("skills", "array-contains-any", tags).get();
+  const response = await Jobs.where("tags", "array-contains-any", tags).get();
   response.docs.forEach(doc => {
     const data = doc.data();
     const id = doc.id;
@@ -165,7 +234,7 @@ app.post('/fetchJobs', async (req, res) => {
   res.send(output);
 })
 
-app.post('/fetchCreatedJobs', async (req, res) => {
+/*app.post('/fetchCreatedJobs', async (req, res) => {
   // request will have a "uid" (employer)
   // retrieve all jobs created by the employer
   const user_id = req.body.uid;
@@ -174,7 +243,7 @@ app.post('/fetchCreatedJobs', async (req, res) => {
   const data = response.docs.map(doc => doc.data());
   console.log(data);
   res.send(data);
-})
+})*/
 
 app.post('/deleteJob', async (req, res) => {
   console.log(req);
