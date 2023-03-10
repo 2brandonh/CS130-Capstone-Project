@@ -128,29 +128,35 @@ app.post('/resumeReview', async (req, res) => {
 })
 
 app.post('/coverLetter', async (req, res) => {
+  // console.log(req)
   /* Refactored for scalability */
   let jobseeker = await Jobseekers.where("uid", "==", req.body.uid).get();
-  jobseeker = jobseeker.docs.map(doc => doc.data())[0];
+  jobseeker = jobseeker.docs.map(doc => doc.data())[0]; // gets the jobseeker data
 
-  console.log(jobseeker)
+  let job = await Jobs.doc(req.body.jobid).get() // queries for a specific job based on jobid (the document id)
+  job = await job.data()
+
   console.log('received cover letter generator request')
   const promptWrapper = `
   Write a cover letter for a user applying for a job given the company, the type of role, the user's ideal job, and the job description.
   Emphasize the user's suitability for the job.
 
+  Applicant Name:
+  ${jobseeker.first} ${jobseeker.last}
+
   Company Name: 
-  ${req.body.company}
+  ${job.company}
 
   Type of Role:
-  ${req.body.job_role}
+  ${job.position}
 
   User's Ideal Job:
-    Shashank is a BS/MS student studying Computer Science at UCLA. In the past, Shashank has worked at Umba, a digital banking start-up, and Blend, a SaaS cloud banking platform, in both software engineering and product management roles. He thrives in complex, ambiguous problem spaces where he can define a path through his natural curiosity around unique user problems and business needs. Shashank is now looking for 2023 Product Management Intern opportunities that provide graduates with high levels of ownership, strong mentorship, and a diverse community.
+  ${jobseeker.description}
 
   Job Description:
-  ${req.body.job_description}
+  ${job.description}
   `
-
+  console.log(promptWrapper)
   const response = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: promptWrapper,
@@ -159,7 +165,7 @@ app.post('/coverLetter', async (req, res) => {
   });
   let cover_letter = response.data.choices[0].text
 
-  console.log(cover_letter)
+  // console.log(cover_letter)
 
 
   res.send(JSON.stringify(cover_letter))
@@ -220,17 +226,17 @@ app.post('/fetchJobs', async (req, res) => {
     return b[1] - a[1];
   });
 
-  console.log(relevance);
-  console.log(sortable);
-
+  // console.log(relevance);
+  // console.log(sortable);
+  console.log(sortable, 'test')
   // return jobs sorted by relevance
-  var output = sortable.map(x => id_to_data[x[0]]);
+  var output = sortable.map(x => ({...id_to_data[x[0]], id : x[0]})); // need to return the job data, in addition to the docid
 
   if (output.length > MAX_FETCH_JOBS){
     output = output.slice(0, MAX_FETCH_JOBS);
   }
 
-  console.log(output);
+  // console.log(output);
   res.send(output);
 })
 
