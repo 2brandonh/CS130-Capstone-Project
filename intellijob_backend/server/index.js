@@ -45,7 +45,7 @@ app.post('/createJob', async (req, res) => {
   The following is a job position written by a recruiter. 
   The passage describes the technical requirements and experience required of a candidate.
   Provide a detailed list of the key techncial skills and experience that a candidate should have for this job.
-  Return this list as an array, with each skill written as a string using double quotes. 
+  Return this list as an array, with entry in the array surrounded by double quotes.
   The array should be ordered from the most relevant to least relevant. 
   Each entry in the array should be at most two words.
   Return only the array in this format and not any other text.
@@ -82,7 +82,7 @@ app.post('/jobseekerTagging', async(req, res) => {
   The following is a passage written by a jobseeker in the ${req.body.industry} industry.
   The passage describes the jobseeker's ideal job and their background.
   Provide a detailed list of their key technical skills.
-  Return this list as an array, with each skill written as a string using double quotes. The array should be ordered from the most relevant to least relevant. Each entry in the array should be at most two words.
+  Return this list as an array, with entry in the array surrounded by double quotes. The array should be ordered from the most relevant to least relevant. Each entry in the array should be at most two words.
   Return only the array in this format and not any other text.
 
   ${req.body.description}
