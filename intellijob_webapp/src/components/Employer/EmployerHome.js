@@ -17,7 +17,7 @@ const EmployerHome = ({name, user}) => {
     window.scrollTo(0, 0)
   }, [formStatus])
 
-  const HeroPlaceholder = name + "Let's review the positions you've posted."
+  const HeroPlaceholder = name + ", let's review the positions you've posted."
 
   return (
     <HeroWrapper>
