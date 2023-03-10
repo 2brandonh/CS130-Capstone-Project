@@ -57,14 +57,13 @@ const logInWithEmailAndPassword = async (email, password) => {
       let jobseekerTags = []
       try {
         const res = await fetch(API_URL + 'jobseekerTagging', requestOptions)
-        const json = await res.json()
-        jobseekerTags = await JSON.parse(json)
-        console.log(jobseekerTags)
+        jobseekerTags = await res.json()
+        // console.log(json)
+        // jobseekerTags = await JSON.parse(json)
         }
         catch (err){
           console.log(err)
         }
-
       // Creating the User Account
       const res = await createUserWithEmailAndPassword(auth, email, pass);
       const user = res.user;
