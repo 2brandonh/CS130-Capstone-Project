@@ -37,7 +37,7 @@ const Home = (props) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setShownChars(c => c + 1)
-          }, 22);
+          }, 30);
         return () => clearInterval(interval);
     }, []);
 
