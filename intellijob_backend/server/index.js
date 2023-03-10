@@ -40,17 +40,36 @@ app.post('/createJob', async (req, res) => {
 
   // TODO: DaVinci -> Brandon
 
+  const promptWrapper = `
+  The following is a job position written by a recruiter. 
+  The passage describes the technical requirements and experience required of a candidate.
+  Provide a detailed list of the key techncial skills, soft skills, and experience that a candidate should have for this job.
+  Return this list as an array, with each skill written as a string with double quotes. The array should be ordered from the most relevant to least relevant. Each entry in the array should be at most two words.
+
+  ${req.body.description}
+  `
+  let jobTag = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: promptWrapper,
+    max_tokens: 1000,
+    temperature: 0,
+  });
+  jobTag = jobTag.data.choices[0].text
+  // console.log(JSON.parse(jobTag))
+
   let employers = await Employers.get() //gets all employers
   employers = employers.docs.map(doc => doc.data())
 
   const recruiter = employers.filter((employer) => employer.uid == payload.uid)[0] //filtering: gets the recruiter corresponding to the same uid
   console.log(recruiter)
-
+  
   payload.company = recruiter.company
   payload.email = recruiter.email
+  payload.tags = JSON.parse(jobTag)
   console.log(payload)
-  const response = await Jobs.add(payload)
-  res.send(response);
+
+  const fb_res = await Jobs.add(payload)
+  res.send(fb_res); // Successfully created the new job listing
 });
 
 app.post('/jobseekerTagging', async(req, res) => {
@@ -59,7 +78,8 @@ app.post('/jobseekerTagging', async(req, res) => {
   The following is a passage written by a jobseeker who works in the ${req.body.industry} industry. 
   The passage describes the jobseeker's ideal job and their background.
   Provide a detailed list of their key technical and soft skills.
-  Return this list as an array, with each skill written as a string.
+  Return this list as an array, with each skill written as a string with double quotes.
+  The array should be ordered from the most relevant to least relevant.
 
   ${req.body.ideal}
   `
@@ -163,17 +183,6 @@ app.post('/fetchJobs', async (req, res) => {
 
   console.log(output);
   res.send(output);
-})
-
-app.post('/fetchCreatedJobs', async (req, res) => {
-  // request will have a "uid" (employer)
-  // retrieve all jobs created by the employer
-  const user_id = req.body.uid;
-
-  const response = await Jobs.where("uid", "==", uid).get();
-  const data = response.docs.map(doc => doc.data());
-  console.log(data);
-  res.send(data);
 })
 
 app.post('/deleteJob', async (req, res) => {
