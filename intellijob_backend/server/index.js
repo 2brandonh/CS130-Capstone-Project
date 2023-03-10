@@ -40,10 +40,10 @@ app.post('/createJob', async (req, res) => {
 
   // TODO: DaVinci -> Brandon
 
-  let employers = await Employers.get() //gets all employers
-  employers = employers.docs.map(doc => doc.data())
+  /* Refactored for scalability */
+  let recruiter = await Employers.where("uid", "==", payload.uid).get();
+  recruiter = recruiter.docs.map(doc => doc.data())[0];
 
-  const recruiter = employers.filter((employer) => employer.uid == payload.uid)[0] //filtering: gets the recruiter corresponding to the same uid
   console.log(recruiter)
 
   payload.company = recruiter.company
@@ -77,9 +77,9 @@ app.post('/jobseekerTagging', async(req, res) => {
 
 
 app.post('/resumeReview', async (req, res) => {
-  let jobseekers = await Jobseekers.get() //gets all users
-  jobseekers = jobseekers.docs.map(doc => doc.data())
-  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0] //filtering: gets the jobseeker corresponding to the same uid
+  /* Refactored for scalability */
+  let jobseeker = await Jobseekers.where("uid", "==", req.body.uid).get();
+  jobseeker = jobseeker.docs.map(doc => doc.data())[0];
 
   console.log(jobseeker)
   console.log('received resume review request')
@@ -112,10 +112,10 @@ app.post('/fetchJobs', async (req, res) => {
   // request will have the "uid" (jobseeker)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
   console.log('got fetch jobs request')
-  let jobseekers = await Jobseekers.get() //gets all users
-  jobseekers = jobseekers.docs.map(doc => doc.data())
-  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == req.body.uid)[0] //filtering: gets the jobseeker corresponding to the same uid
 
+  /* Refactored for scalability */
+  let jobseeker = await Jobseekers.where("uid", "==", req.body.uid).get();
+  jobseeker = jobseeker.docs.map(doc => doc.data())[0];
   const tags = jobseeker.tags; //Array of tags for the current jobseeker
 
   var relevance = {};
@@ -186,13 +186,34 @@ app.post('/deleteJob', async (req, res) => {
   res.send(fb_res);
 });
 
+/* To be finished */
+
+// app.post('/createBookmark', async (req, res) => {
+//   const jobseekerID = req.body.uid;
+//   const jobID = req.body.jobid;
+//   console.log(jobID);
+
+//   let response = await Jobseekers.where("uid", "==", jobseekerID).get();
+//   response = response.docs.map(doc => ({...doc.data(), id: doc.id}))[0];
+//   const jobseekerDoc = await Jobseekers.doc(response.id);
+
+//   const FieldValue = require('firebase-admin').firestore.FieldValue;
+//   // Add the bookmarked job ID into the Jobseeker's bookmark array
+
+//   await jobseekerDoc.update({
+//     bookmarks: FieldValue.arrayUnion('hi')
+//   });
+  
+//   // console.log(jobseekerDoc.data());
+// });
+
 app.get('/fetchBookmarkedJobs', async (req, res) => {
   // req will have uid (jobseeker)
 
   // Fetch jobseeker matching given UID and get bookmarked jobs
   const jobseeker_id = req.body.uid;
   const response = await Jobseekers.where("uid", "==", jobseeker_id).get();
-  // jobseeker becomes the bookmarked array (take first element since there should be 1 corresponding jobseeker to the given UID)
+  // Extract the bookmarked array from query response (take first element since there should be 1 corresponding jobseeker to the given UID)
   const bookmarks = response.docs.map(doc => (doc.data().bookmarks))[0];
 
   // Fetch jobs and then filter by document ID if it exists in bookmarks array

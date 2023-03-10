@@ -16,9 +16,12 @@
     "dotenv": "^16.0.3",
     "express": "^4.17.3",
     "firebase": "^8.10.0",
-    "openai": "^3.2.1",
+    "firebase-admin": "^11.5.0",
+    "n": "^9.0.1",
     "node-fetch": "^3.3.0",
     "nodemon": "^2.0.21",
+    "npm": "^9.6.1",
+    "openai": "^3.2.1",
     "request": "^2.88.2"
   }
 }
