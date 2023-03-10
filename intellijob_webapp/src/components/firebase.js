@@ -78,6 +78,7 @@ const logInWithEmailAndPassword = async (email, password) => {
         authProvider: "local",
         email,
         tags: jobseekerTags,
+        bookmarks: []
       }).then(() => {
         updateProfile(auth.currentUser, {
           displayName: "Jobseeker: " + first,
