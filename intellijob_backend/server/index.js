@@ -43,8 +43,11 @@ app.post('/createJob', async (req, res) => {
   const promptWrapper = `
   The following is a job position written by a recruiter. 
   The passage describes the technical requirements and experience required of a candidate.
-  Provide a detailed list of the key techncial skills, soft skills, and experience that a candidate should have for this job.
-  Return this list as an array, with each skill written as a string with double quotes. The array should be ordered from the most relevant to least relevant. Each entry in the array should be at most two words.
+  Provide a detailed list of the key techncial skills and experience that a candidate should have for this job.
+  Return this list as an array, with each skill written as a string using double quotes. 
+  The array should be ordered from the most relevant to least relevant. 
+  Each entry in the array should be at most two words.
+  Return only the array in this format and not any other text.
 
   ${req.body.description}
   `
@@ -65,7 +68,7 @@ app.post('/createJob', async (req, res) => {
   
   payload.company = recruiter.company
   payload.email = recruiter.email
-  payload.tags = JSON.parse(jobTag)
+  payload.tags = await JSON.parse(jobTag).map(word => word.toLowerCase())
   console.log(payload)
 
   const fb_res = await Jobs.add(payload)
@@ -73,15 +76,16 @@ app.post('/createJob', async (req, res) => {
 });
 
 app.post('/jobseekerTagging', async(req, res) => {
+  console.log(req.body)
   console.log('received jobseeker tagging request')
   const promptWrapper = `
-  The following is a passage written by a jobseeker who works in the ${req.body.industry} industry. 
+  The following is a passage written by a jobseeker in the ${req.body.industry} industry.
   The passage describes the jobseeker's ideal job and their background.
-  Provide a detailed list of their key technical and soft skills.
-  Return this list as an array, with each skill written as a string with double quotes.
-  The array should be ordered from the most relevant to least relevant.
+  Provide a detailed list of their key technical skills.
+  Return this list as an array, with each skill written as a string using double quotes. The array should be ordered from the most relevant to least relevant. Each entry in the array should be at most two words.
+  Return only the array in this format and not any other text.
 
-  ${req.body.ideal}
+  ${req.body.description}
   `
 
   const response = await openai.createCompletion({
@@ -90,8 +94,10 @@ app.post('/jobseekerTagging', async(req, res) => {
     max_tokens: 1000,
     temperature: 0,
   });
-  const review = response.data.choices[0].text
+  let review = response.data.choices[0].text
+  review = await JSON.parse(review).map(word => word.toLowerCase())
   console.log(review)
+
   res.send(JSON.stringify(review))
 })
 
@@ -116,7 +122,7 @@ app.post('/resumeReview', async (req, res) => {
     max_tokens: 1000,
     temperature: 0,
   });
-  const review = response.data.choices[0].text
+  let review = response.data.choices[0].text
 
   res.send(JSON.stringify(review))
 })
@@ -141,7 +147,7 @@ app.post('/fetchJobs', async (req, res) => {
 
   console.log(tags);
 
-  var relevance = {};
+  var relevance = {}; 
   var id_to_data = {};
 
   const response = await Jobs.where("tags", "array-contains-any", tags).get();
