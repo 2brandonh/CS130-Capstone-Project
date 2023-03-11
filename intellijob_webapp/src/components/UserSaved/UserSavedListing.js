@@ -1,9 +1,31 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect} from "react";
+const API_URL = "http://localhost:3001/"
 
 // This is the individual listing for a job
 
-const UserSavedListing = ({jobInfo}) => {
+const UserSavedListing = ({jobInfo, user, savedJobs, setSavedJobs}) => {
+    const removeBookmark = async (action) => {
+        const url = API_URL + 'removeBookmark'
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({jobid: jobInfo.id, uid: user.uid})
+          };
+          try {
+            const res = await fetch(url, requestOptions)
+            console.log(res)
+            const newBookmarks = savedJobs.filter(job => job.id !== jobInfo.id)
+            setSavedJobs(newBookmarks)
+            }
+            catch (err){
+                console.log(err)
+            }
+    }
 
     return(
         <ListingWrapper>
@@ -31,7 +53,7 @@ const UserSavedListing = ({jobInfo}) => {
 
                 <ButtonWrapper>
                     <Button onClick={() => { }}>Apply</Button>
-                    <Button onClick={() => { }}>Remove Bookmark</Button>
+                    <Button onClick={() => {removeBookmark()}}>Remove Bookmark</Button>
                     <Button onClick={() => { }}>Cover Letter</Button>
                 </ButtonWrapper>
 

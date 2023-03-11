@@ -196,6 +196,7 @@ app.post('/fetchJobs', async (req, res) => {
   var relevance = {}; 
   var id_to_data = {};
 
+  console.log("Querying")
   const response = await Jobs.where("tags", "array-contains-any", tags).get();
   response.docs.forEach(doc => {
     const data = doc.data();
@@ -208,7 +209,6 @@ app.post('/fetchJobs', async (req, res) => {
         rel++;
       }
     });
-
     if (id in relevance) {
       relevance[id] += rel;
     } else {
@@ -263,28 +263,51 @@ app.post('/deleteJob', async (req, res) => {
 
 /* To be finished */
 
-// app.post('/createBookmark', async (req, res) => {
-//   const jobseekerID = req.body.uid;
-//   const jobID = req.body.jobid;
-//   console.log(jobID);
+app.post('/createBookmark', async (req, res) => {
+  const jobseekerID = req.body.uid;
+  const jobID = req.body.jobid;
+  console.log("create bookmarks endpoint")
+  console.log(jobID);
 
-//   let response = await Jobseekers.where("uid", "==", jobseekerID).get();
-//   response = response.docs.map(doc => ({...doc.data(), id: doc.id}))[0];
-//   const jobseekerDoc = await Jobseekers.doc(response.id);
+  let response = await Jobseekers.where("uid", "==", jobseekerID).get();
+  response = response.docs.map(doc => ({...doc.data(), id: doc.id}))[0];
+  const jobseekerDoc = await Jobseekers.doc(response.id);
 
-//   const FieldValue = require('firebase-admin').firestore.FieldValue;
-//   // Add the bookmarked job ID into the Jobseeker's bookmark array
+  const FieldValue = require('firebase').firestore.FieldValue;
+  // Add the bookmarked job ID into the Jobseeker's bookmark array
 
-//   await jobseekerDoc.update({
-//     bookmarks: FieldValue.arrayUnion('hi')
-//   });
+  const create_res = await jobseekerDoc.update({
+    bookmarks: FieldValue.arrayUnion(jobID)
+  });
   
-//   // console.log(jobseekerDoc.data());
-// });
+  res.send(create_res)
+  // console.log(jobseekerDoc.data());
+});
 
-app.get('/fetchBookmarkedJobs', async (req, res) => {
+app.post('/removeBookmark', async (req, res) => {
+  const jobseekerID = req.body.uid;
+  const jobID = req.body.jobid;
+  console.log("remove bookmarks endpoint")
+  console.log(jobID);
+
+  let response = await Jobseekers.where("uid", "==", jobseekerID).get();
+  response = response.docs.map(doc => ({...doc.data(), id: doc.id}))[0];
+  const jobseekerDoc = await Jobseekers.doc(response.id);
+
+  const FieldValue = require('firebase').firestore.FieldValue;
+  // Add the bookmarked job ID into the Jobseeker's bookmark array
+
+  const create_res = await jobseekerDoc.update({
+    bookmarks: FieldValue.arrayRemove(jobID)
+  });
+  
+  res.send(create_res)
+  // console.log(jobseekerDoc.data());
+});
+
+app.post('/fetchBookmarkedJobs', async (req, res) => {
   // req will have uid (jobseeker)
-
+  console.log(req)
   // Fetch jobseeker matching given UID and get bookmarked jobs
   const jobseeker_id = req.body.uid;
   const response = await Jobseekers.where("uid", "==", jobseeker_id).get();

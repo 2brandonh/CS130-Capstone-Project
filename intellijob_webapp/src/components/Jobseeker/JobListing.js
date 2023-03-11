@@ -5,6 +5,32 @@ const API_URL = "http://localhost:3001/"
 // This is the individual listing for a job
 
 const JobListing = ({jobInfo, user}) => {
+    const [bookmarked, setBookmarked] = useState(false)
+
+    const changeBookmark = async (action) => {
+        const url = action === 'remove' ? API_URL + 'removeBookmark' : API_URL + 'createBookmark'
+        console.log('calling')
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({jobid: jobInfo.id, uid: user.uid})
+          };
+          try {
+            const res = await fetch(url, requestOptions)
+            console.log(res)
+            // const json = await res.json()
+            // console.log(json)
+            setBookmarked(!bookmarked)
+            console.log(bookmarked)
+            }
+            catch (err){
+                console.log(err)
+            }
+    }
 
     const handleCover = async (e) => {
         const requestOptions = {
@@ -55,7 +81,8 @@ const JobListing = ({jobInfo, user}) => {
 
                 <ButtonWrapper>
                     <Button onClick={() => { }}>Apply</Button>
-                    <Button onClick={() => { }}>Bookmark</Button>
+                    {!bookmarked && <Button onClick={() => {changeBookmark('create')}}>Bookmark</Button>}
+                    {bookmarked && <Button onClick={() => {changeBookmark('remove')}}>Remove Bookmark</Button>}
                     <Button onClick={handleCover}>Cover Letter</Button>
                 </ButtonWrapper>
 

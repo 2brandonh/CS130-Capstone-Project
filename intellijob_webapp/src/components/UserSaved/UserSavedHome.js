@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import JobLayout from "./UserSavedLayout";
 
-const UserSavedHome = () => {
+const UserSavedHome = ({name, user}) => {
   const [shownChars, setShownChars] = useState(0)
   const [formStatus, setFormStatus] = useState(null)
 
@@ -18,7 +18,6 @@ const UserSavedHome = () => {
   }, [formStatus])
 
   const HeroPlaceholder = "Interested? You saved these jobs previously."
-
   return (
     <HeroWrapper>
       <Hero>
@@ -30,7 +29,7 @@ const UserSavedHome = () => {
               {/* <Button onClick={() => {}}>Polish resume</Button>
                           <Button onClick={() => {}}>Write cover letter</Button> */}
             </ButtonWrapper>
-            <JobLayout />
+            <JobLayout user={user}/>
           </div>
         )}
       </Hero>
