@@ -107,7 +107,7 @@ app.post('/resumeReview', async (req, res) => {
   let jobseeker = await Jobseekers.where("uid", "==", req.body.uid).get();
   jobseeker = jobseeker.docs.map(doc => doc.data())[0];
 
-  console.log(jobseeker)
+  // console.log(jobseeker)
   console.log('received resume review request')
   const promptWrapper = `
   The following is a resume created by a person who works in the ${jobseeker.industry} industry. 
@@ -116,6 +116,7 @@ app.post('/resumeReview', async (req, res) => {
 
   ${req.body.description}
   `
+  console.log(promptWrapper)
   const response = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: promptWrapper,
@@ -307,16 +308,20 @@ app.post('/removeBookmark', async (req, res) => {
 
 app.post('/fetchBookmarkedJobs', async (req, res) => {
   // req will have uid (jobseeker)
-  console.log(req)
+  // console.log(req)
   // Fetch jobseeker matching given UID and get bookmarked jobs
   const jobseeker_id = req.body.uid;
   const response = await Jobseekers.where("uid", "==", jobseeker_id).get();
   // Extract the bookmarked array from query response (take first element since there should be 1 corresponding jobseeker to the given UID)
   const bookmarks = response.docs.map(doc => (doc.data().bookmarks))[0];
 
+  let jobs = []
+  console.log(bookmarks)
+  if (bookmarks.length > 0){ // Fix bug as in cannot be used for empty array
   // Fetch jobs and then filter by document ID if it exists in bookmarks array
   let jobs = await Jobs.where("__name__", "in", bookmarks).get();
   jobs = jobs.docs.map(doc => ({...doc.data(), id: doc.id}));
+  }
   
   // return the jobs that are bookmarked
   res.send(jobs);
