@@ -6,6 +6,9 @@ const API_URL = "http://localhost:3001/"
 
 const JobListing = ({jobInfo, user}) => {
     const [bookmarked, setBookmarked] = useState(false)
+    
+    const [cover, setCover] = useState(null)
+    const [coverShownChars, setCoverShownChars] = useState(0)
 
     const changeBookmark = async (action) => {
         const url = action === 'remove' ? API_URL + 'removeBookmark' : API_URL + 'createBookmark'
@@ -47,13 +50,21 @@ const JobListing = ({jobInfo, user}) => {
         const res = await fetch(API_URL + 'coverLetter', requestOptions)
         console.log(res)
         const json = await res.json()
-        console.log(json)
+        setCover(json)
+        setCoverShownChars(0)
         }
         catch (err){
             console.log(err)
         }
 
     }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+          setCoverShownChars(c => c + 1)
+        }, 12); //should be 40
+        return () => clearInterval(interval);
+    }, [coverShownChars]);
 
     return(
         <ListingWrapper>
@@ -78,6 +89,12 @@ const JobListing = ({jobInfo, user}) => {
                 <Description>
                     <a>{jobInfo.description}</a>
                 </Description>
+
+                {cover !== null &&
+                <DescriptionLight>
+                    <a>{cover.substring(0, coverShownChars)}</a>
+                </DescriptionLight>
+                }
 
                 <ButtonWrapper>
                     <Button onClick={() => { }}>Apply</Button>
@@ -145,6 +162,14 @@ const Description = styled.section`
     font-size: 20px;
     line-height: 1.5;
     color: #cfcfcf;
+    white-space: pre-line;
+`
+
+const DescriptionLight = styled.section`
+    margin-top: 30px;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #a1a1a1;
     white-space: pre-line;
 `
 

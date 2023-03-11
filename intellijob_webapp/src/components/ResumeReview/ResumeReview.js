@@ -23,7 +23,7 @@ const ResumeReview = ({ name, user }) => {
     useEffect(() => {
       const interval = setInterval(() => {
         setResumeShownChars(c => c + 1)
-      }, 30); //should be 40
+      }, 12); //should be 40
       return () => clearInterval(interval);
   }, [resumeShownChars]);
 
