@@ -40,7 +40,6 @@ app.post('/createJob', async (req, res) => {
 
   // TODO: DaVinci -> Brandon
 
-  /* Refactored for scalability */
   const promptWrapper = `
   The following is a job position written by a recruiter. 
   The passage describes the technical requirements and experience required of a candidate.
@@ -61,6 +60,7 @@ app.post('/createJob', async (req, res) => {
   jobTag = jobTag.data.choices[0].text
   // console.log(JSON.parse(jobTag))
   
+  /* Refactored for scalability */
   let recruiter = await Employers.where("uid", "==", payload.uid).get();
   recruiter = recruiter.docs.map(doc => doc.data())[0];
 
@@ -255,26 +255,22 @@ app.post('/deleteJob', async (req, res) => {
   res.send(fb_res);
 });
 
-/* To be finished */
+app.post('/createBookmark', async (req, res) => {
+  const jobseekerID = req.body.uid;
+  const jobID = req.body.jobid;
 
-// app.post('/createBookmark', async (req, res) => {
-//   const jobseekerID = req.body.uid;
-//   const jobID = req.body.jobid;
-//   console.log(jobID);
-
-//   let response = await Jobseekers.where("uid", "==", jobseekerID).get();
-//   response = response.docs.map(doc => ({...doc.data(), id: doc.id}))[0];
-//   const jobseekerDoc = await Jobseekers.doc(response.id);
-
-//   const FieldValue = require('firebase-admin').firestore.FieldValue;
-//   // Add the bookmarked job ID into the Jobseeker's bookmark array
-
-//   await jobseekerDoc.update({
-//     bookmarks: FieldValue.arrayUnion('hi')
-//   });
+  let response = await Jobseekers.where("uid", "==", jobseekerID).get();
+  response = response.docs.map(doc => ({...doc.data(), id: doc.id}))[0];
+  const jobseekerDoc = await Jobseekers.doc(response.id);
   
-//   // console.log(jobseekerDoc.data());
-// });
+  /* Must include this to use arrayUnion(). Do not use firebase-admin version of FieldValue! */
+  const FieldValue = require('firebase').firestore.FieldValue;
+
+  // Add the bookmarked job ID into the Jobseeker's bookmark array
+  await jobseekerDoc.update({
+    bookmarks: FieldValue.arrayUnion(jobID)
+  });
+});
 
 app.get('/fetchBookmarkedJobs', async (req, res) => {
   // req will have uid (jobseeker)
@@ -282,6 +278,7 @@ app.get('/fetchBookmarkedJobs', async (req, res) => {
   // Fetch jobseeker matching given UID and get bookmarked jobs
   const jobseeker_id = req.body.uid;
   const response = await Jobseekers.where("uid", "==", jobseeker_id).get();
+
   // Extract the bookmarked array from query response (take first element since there should be 1 corresponding jobseeker to the given UID)
   const bookmarks = response.docs.map(doc => (doc.data().bookmarks))[0];
 
