@@ -196,6 +196,7 @@ app.post('/fetchJobs', async (req, res) => {
   var relevance = {}; 
   var id_to_data = {};
 
+  console.log("Querying")
   const response = await Jobs.where("tags", "array-contains-any", tags).get();
   response.docs.forEach(doc => {
     const data = doc.data();
@@ -282,9 +283,9 @@ app.post('/deleteJob', async (req, res) => {
 //   // console.log(jobseekerDoc.data());
 // });
 
-app.get('/fetchBookmarkedJobs', async (req, res) => {
+app.post('/fetchBookmarkedJobs', async (req, res) => {
   // req will have uid (jobseeker)
-
+  console.log(req)
   // Fetch jobseeker matching given UID and get bookmarked jobs
   const jobseeker_id = req.body.uid;
   const response = await Jobseekers.where("uid", "==", jobseeker_id).get();
