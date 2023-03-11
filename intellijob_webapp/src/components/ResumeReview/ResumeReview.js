@@ -134,7 +134,7 @@ padding-bottom: 0;
 font-size: 20px;
 color: white;
 font-weight: 500;
-line-height: 20px;
+line-height: 1.5;
 text-align: left;
 }
 `;
