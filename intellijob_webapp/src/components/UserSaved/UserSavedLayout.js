@@ -38,7 +38,7 @@ const UserSavedLayout = ({user}) => {
   const [savedJobs, setSavedJobs] = useState([])
     return(
         <JobWrapper>
-            {savedJobs.map((jobData) => <JobListing key={jobData.jobID} jobInfo={jobData}/>)}
+            {savedJobs.map((jobData) => <JobListing jobInfo={jobData} user={user} savedJobs={savedJobs} setSavedJobs={setSavedJobs}/>)}
         </JobWrapper>
     )
 }
