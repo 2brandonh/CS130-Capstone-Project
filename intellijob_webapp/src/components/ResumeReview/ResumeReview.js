@@ -7,7 +7,9 @@ const ResumeReview = ({ name, user }) => {
     const [resume, setResume] = useState('')
     //const [recs, setRecs] = useState('')
     const [shownChars, setShownChars] = useState(0)
-    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const [resumeReview, setResumeReview] = useState(null)
+    const [resumeShownChars, setResumeShownChars] = useState(0)
 
     const HeroPlaceholder = "Receive an AI-Powered Resume Review."
 
@@ -18,6 +20,13 @@ const ResumeReview = ({ name, user }) => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setResumeShownChars(c => c + 1)
+      }, 30); //should be 40
+      return () => clearInterval(interval);
+  }, [resumeShownChars]);
+
     const editForm = (e) => { //update the value of the inputted resume or the recommendations from ChatGPT
         e.preventDefault();
         const updatedForm = e.target.value
@@ -26,7 +35,6 @@ const ResumeReview = ({ name, user }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true)
 
         const requestOptions = {
             mode: 'cors',
@@ -35,14 +43,16 @@ const ResumeReview = ({ name, user }) => {
             },
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({resume: resume, uid: user.uid})
+            body: JSON.stringify({description: resume, uid: user.uid})
           };
 
-          try {
+          try { 
             const res = await fetch(API_URL + 'resumeReview', requestOptions)
             console.log(res)
             const json = await res.json()
             console.log(json)
+            setResumeReview(json)
+            setResumeShownChars(0)
             }
             catch (err){
               console.log(err)
@@ -67,16 +77,12 @@ const ResumeReview = ({ name, user }) => {
                         </InputWrapper>
                     </StyledForm>
                 </Hero>
-            </HeroWrapper>
-            <RecommendationWrapper>
+                {resumeReview !== null &&
                 <Recommendation>
-                    <div>
-                        <h2> {isSubmitting ? 'Generating recommendations...' : ''} </h2>
-
-
-                    </div>
+                      <h2> {resumeReview.substring(0, resumeShownChars)} </h2>
                 </Recommendation>
-            </RecommendationWrapper>
+            }
+            </HeroWrapper>
         </Wrapper>
     )
 
@@ -89,8 +95,8 @@ const Wrapper = styled.div`
 const HeroWrapper = styled.section`
   display: flex;
   align-content: start;
-  min-height: 700px;
-  padding-bottom: 138px;
+  min-height: 250px;
+  padding-bottom: 120px;
   padding-top: 400px;
   padding: 60px 0;
   position: relative;
@@ -108,27 +114,27 @@ const HeroWrapper = styled.section`
 
 const RecommendationWrapper = styled.section`
   display: flex;
-  align-content: start;
-  min-height: 700px;
+  align-content: center;
+  min-height: 100px;
   padding-bottom: 138px;
-  padding-top: 400px;
-  padding: 60px 0;
+  /* padding: 60px 0; */
   position: relative;
   flex-wrap: wrap;
   width: 100%;
-  max-width: 1100px;
-  align-items: center;
-  margin: auto;
+  max-width: 800px;
+  align-items: left;
+  margin: 0 200px;
 `;
 
 const Recommendation = styled.div`
 width: 100%;
-h1 {
+padding-top:50px;
+h2 {
 padding-bottom: 0;
-font-size: 80px;
+font-size: 20px;
 color: white;
 font-weight: 500;
-line-height: 100px;
+line-height: 20px;
 text-align: left;
 }
 `;

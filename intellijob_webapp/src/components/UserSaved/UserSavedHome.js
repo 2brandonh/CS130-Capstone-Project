@@ -9,7 +9,7 @@ const UserSavedHome = ({name, user}) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setShownChars(c => c + 1)
-    }, 0); //should be 32
+    }, 30); //should be 32
     return () => clearInterval(interval);
   }, []);
 
