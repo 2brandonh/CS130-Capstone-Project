@@ -4,37 +4,30 @@ const API_URL = "http://localhost:3001/"
 
 // This is the individual listing for a job
 
-const JobListing = ({jobInfo}) => {
-    const [isGenerating, setIsGenerating] = useState(false)
-    const [coverLetter, setCoverLetter] = useState('')
+const JobListing = ({jobInfo, user}) => {
 
-    const handleCoverLetter = async (e) => {
-        e.preventDefault()
-        setIsGenerating(true)
-
+    const handleCover = async (e) => {
         const requestOptions = {
             mode: 'cors',
             headers: {
-                'Access-Control-Allow-Origin':'*'
+              'Access-Control-Allow-Origin':'*'
             },
             method: 'POST',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({job_description: jobInfo.description, job_role: jobInfo.position, company: jobInfo.company})
-        };
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({jobid: jobInfo.id, uid: user.uid})
+          };
+
         try {
-            
-            const res = await fetch(API_URL + 'coverLetter', requestOptions)
-            
-            console.log(res)
-            const json = await res.json()
-            console.log(json)
+        const res = await fetch(API_URL + 'coverLetter', requestOptions)
+        console.log(res)
+        const json = await res.json()
+        console.log(json)
         }
         catch (err){
             console.log(err)
         }
+
     }
-
-
 
     return(
         <ListingWrapper>
@@ -63,13 +56,13 @@ const JobListing = ({jobInfo}) => {
                 <ButtonWrapper>
                     <Button onClick={() => { }}>Apply</Button>
                     <Button onClick={() => { }}>Bookmark</Button>
-                    <Button onClick={handleCoverLetter} type="submit">Cover Letter</Button>
+                    <Button onClick={handleCover}>Cover Letter</Button>
                 </ButtonWrapper>
 
             </InnerWrapper>
             {/* <a style={{color: "white"}}> Test JOB 
                 {jobInfo.company}
-                {jobInfo.positon}
+                {jobInfo.position}
                 {jobInfo.jobDesc}
                 {jobInfo.skills}
                 {jobInfo.comp}

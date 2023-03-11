@@ -2,14 +2,14 @@ import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import EmployerLayout from "./EmployerLayout";
 
-const EmployerHome = () => {
+const EmployerHome = ({name, user}) => {
   const [shownChars, setShownChars] = useState(0)
   const [formStatus, setFormStatus] = useState(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
       setShownChars(c => c + 1)
-    }, 0); //should be 32
+    }, 30); //should be 32
     return () => clearInterval(interval);
   }, []);
 
@@ -17,42 +17,7 @@ const EmployerHome = () => {
     window.scrollTo(0, 0)
   }, [formStatus])
 
-  const HeroPlaceholder = "Let's review the positions you've posted."
-
-  // const handleButtonDisplay = () =>
-
-  // const handleButtonDisplay = () => {
-  //     if (formStatus === null){
-  //         return(
-  //             <ButtonWrapper>
-  //                 <Button onClick={() => setFormStatus('JOB')}>Jobseeker</Button>
-  //                 <Button onClick={() => setFormStatus('EMP')}>Employer</Button>
-  //             </ButtonWrapper>
-  //         )
-  //     }
-  //     else if (formStatus === "JOB"){
-  //         return(
-  //             <div>
-  //             <ButtonWrapper>
-  //                 <ButtonClick onClick={() => setFormStatus('JOB')}>Jobseeker</ButtonClick>
-  //                 <Button2 onClick={() => setFormStatus('EMP')}>Employer</Button2>
-  //             </ButtonWrapper>
-  //                 <Jobseeker/>
-  //             </div>
-  //         )
-  //     }
-  //     else if (formStatus === "EMP"){
-  //         return(
-  //             <div>
-  //                 <ButtonWrapper>
-  //                     <Button2 onClick={() => setFormStatus('JOB')}>Jobseeker</Button2>
-  //                     <ButtonClick onClick={() => setFormStatus('EMP')}>Employer</ButtonClick>
-  //                 </ButtonWrapper>
-  //                 <Employer/>
-  //             </div>
-  //         )
-  //     }
-  // }
+  const HeroPlaceholder = name + ", let's review the positions you've posted."
 
   return (
     <HeroWrapper>
