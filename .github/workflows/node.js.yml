@@ -29,5 +29,5 @@ jobs:
         cache: 'npm'
         cache-dependency-path: "./intellijob_webapp/package-lock.json"
     - run: npm --prefix ./intellijob_webapp ci
-    - run: false npm --prefix ./intellijob_webapp run build --if-present
+    - run: npm --prefix ./intellijob_webapp run build --if-present
     - run: npm --prefix ./intellijob_webapp test
