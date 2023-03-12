@@ -14,7 +14,8 @@ const CreateJob = ({ user, name }) => {
       jobid: "",
       skills: "",
       comp: "",
-      uid: ""
+      uid: "",
+      link: ""
     }
   )
 
@@ -56,6 +57,8 @@ const CreateJob = ({ user, name }) => {
     console.log(res)
     const json = await res.json()
     console.log(json)
+    let path = `/`; 
+    navigate(path);
     }
     catch (err){
       console.log(err)
@@ -81,6 +84,7 @@ return (
             <StyledInput type="text" value={form.comp} placeholder={"Compensation"} onChange={e => editForm(e, "comp")} />
             <StyledInput type="text" value={form.location} placeholder={"Location"} onChange={e => editForm(e, "location")} />
             <StyledInput type="text" value={form.jobid} placeholder={"Job ID"} onChange={e => editForm(e, "jobid")} />
+            <StyledInput type="text" value={form.link} placeholder={"Job Link"} onChange={e => editForm(e, "link")} />
             <StyledDesc type="text" value={form.description} placeholder={"Description"} onChange={e => editForm(e, "description")} />
             <StyledButton type="submit">Submit Job</StyledButton>
           </InputWrapper>

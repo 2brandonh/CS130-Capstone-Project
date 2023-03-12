@@ -95,7 +95,7 @@ const JobListing = ({jobInfo, user}) => {
                 }
 
                 <ButtonWrapper>
-                    <Button onClick={() => { }}>Apply</Button>
+                    <Button onClick={() => {window.location.href = jobInfo.link}}>Apply</Button>
                     {!bookmarked && <Button onClick={() => {changeBookmark('create')}}>Bookmark</Button>}
                     {bookmarked && <Button onClick={() => {changeBookmark('remove')}}>Remove Bookmark</Button>}
                     <Button onClick={handleCover}>Cover Letter</Button>
