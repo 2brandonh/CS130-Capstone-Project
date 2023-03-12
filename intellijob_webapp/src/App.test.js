@@ -6,6 +6,8 @@ import UserSavedHome from './components/UserSaved/UserSavedHome';
 import ResumeReview from './components/ResumeReview/ResumeReview';
 import JobseekerHome from './components/Jobseeker/JobseekerHome';
 import EmployerHome from './components/Employer/EmployerHome';
+import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react';
 
 
 it('renders without crashing', () => {
@@ -14,16 +16,16 @@ it('renders without crashing', () => {
 });
 
 
-// it('renders join now', () => {
-//   render(<App />);
-//   expect(screen.getByText('Join Now')).toBeInTheDocument();
-// });
+it('renders join now', () => {
+  render(<App />);
+  expect(screen.getByText('Join Now')).toBeInTheDocument();
+});
 
 
-// it('renders sign in', () => {
-//     render(<App />);
-//     expect(screen.getByText('Sign In')).toBeInTheDocument();
-// });
+it('renders sign in', () => {
+    render(<App />);
+    expect(screen.getByText('Sign In')).toBeInTheDocument();
+});
 
 
 it('renders UserSavedHome without crashing', () => {
