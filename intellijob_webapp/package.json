@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@testing-library/react": "^14.0.0",
     "dotenv": "^16.0.3",
     "firebase": "^9.17.1",
     "firebase-admin": "^11.5.0",
