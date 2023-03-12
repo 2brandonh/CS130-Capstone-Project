@@ -5,6 +5,7 @@ const { request } = require("express");
 const Request = require("request/request");
 const dotenv = require("dotenv").config();
 const { Configuration, OpenAIApi } = require("openai");
+const nodemailer = require("nodemailer");
 
 const app = express();
 
@@ -100,6 +101,69 @@ app.post('/jobseekerTagging', async(req, res) => {
 
   res.send(JSON.stringify(review))
 })
+
+app.post('/emailService', async (req, res) => {
+  console.log('received email service request');
+  const user_id = req.body.uid;
+  const job_id = req.body.jobid;
+  const cover_letter_text = req.body.coverletter;
+
+  if (cover_letter_text === null){
+    res.send("Null cover letter sent, not sending email");
+    return;
+  }
+
+  let jobseekers = await Jobseekers.get();
+  jobseekers = jobseekers.docs.map(doc => doc.data());
+  const jobseeker = jobseekers.filter((jobseeker) => jobseeker.uid == user_id)[0];
+  const jobseeker_name = jobseeker.first + " " + jobseeker.last;
+  const jobseeker_email = jobseeker.email;
+
+  let job_data = await Jobs.doc(job_id).get();
+  const job_id_readable = job_data.data().jobid;
+  const employer_uid = job_data.data().uid;
+
+  console.log(employer_uid);
+
+  let employers = await Employers.get();
+  employers = employers.docs.map(doc => doc.data());
+  const employer = employers.filter((employer) => employer.uid == employer_uid)[0];
+  const to_addr = employer.email;
+
+  const from_addr = process.env.EMAIL_SERVICE_ADDRESS;
+  const email_pass = process.env.EMAIL_SERVICE_PWD;
+
+  console.log(from_addr);
+  console.log(to_addr);
+
+  const subject_fmt = "Cover Letter from " + jobseeker_name + " for IntelliJob ID " + job_id_readable;
+  const cover_letter_fmt = cover_letter_text + "\n This is a no-reply address. Please send any job-related reply to " + jobseeker_email + ".";
+
+  var transporter = nodemailer.createTransport({
+    host: 'gmail',
+    port: 587,
+    auth: {
+        user: from_addr,
+        pass: email_pass
+    }
+  });
+
+  var mailOptions = {
+    from: from_addr,
+    to: to_addr,
+    subject: "Cover Letter from " + jobseeker_name + " for IntelliJob ID " + job_id_readable,
+    text: cover_letter_text + "\n This is a no-reply address. Please send any job-related reply to " + jobseeker_email + "."
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      res.send(error);
+    } else {
+      res.send('Email sent: ' + info.response);
+    }
+  });
+
+});
 
 
 app.post('/resumeReview', async (req, res) => {
