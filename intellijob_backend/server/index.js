@@ -327,7 +327,7 @@ app.post('/fetchBookmarkedJobs', async (req, res) => {
   res.send(jobs);
 });
 
-app.get('/fetchCreatedJobs', async (req, res) => {
+app.post('/fetchCreatedJobs', async (req, res) => {
   // req will have uid (employer)
   const employer = req.body.uid;
   

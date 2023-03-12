@@ -1,10 +1,30 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect} from "react";
-
+const API_URL = "http://localhost:3001/"
 // This is the individual listing for a job
 
-const EmployerListing = ({jobInfo}) => {
-
+const EmployerListing = ({jobInfo, user, createdJobs, setCreatedJobs}) => {
+    const deleteJob = async (action) => {
+        const url = API_URL + 'deleteJob'
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({jobid: jobInfo.id, uid: user.uid})
+          };
+          try {
+            const res = await fetch(url, requestOptions)
+            console.log(res)
+            const newJobs = createdJobs.filter(job => job.id !== jobInfo.id)
+            setCreatedJobs(newJobs)
+            }
+            catch (err){
+                console.log(err)
+            }
+    }
     return(
         <ListingWrapper>
             <InnerWrapper>
@@ -38,7 +58,7 @@ const EmployerListing = ({jobInfo}) => {
                 </Description>
 
                 <ButtonWrapper>
-                    <Button onClick={() => { }}>Remove Position</Button>
+                    <Button onClick={() => {deleteJob()}}>Remove Position</Button>
                     {/* <Button onClick={() => { }}>Cover Letter</Button> */}
                 </ButtonWrapper>
 

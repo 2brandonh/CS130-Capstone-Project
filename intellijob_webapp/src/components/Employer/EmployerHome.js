@@ -33,7 +33,7 @@ const EmployerHome = ({name, user}) => {
               {/* <Button onClick={() => {}}>Polish resume</Button>
                           <Button onClick={() => {}}>Write cover letter</Button> */}
             </ButtonWrapper>
-            <EmployerLayout />
+            <EmployerLayout user={user}/>
           </div>
         )}
       </Hero>
