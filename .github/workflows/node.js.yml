@@ -27,6 +27,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: "./intellijob_webapp/package-lock.json"
     - run: npm --prefix ./intellijob_webapp ci
     - run: npm --prefix ./intellijob_webapp run build --if-present
     - run: npm --prefix ./intellijob_webapp test
