@@ -206,7 +206,7 @@ app.post('/fetchJobs', async (req, res) => {
     // TODO add weighting for each tag/skill based on order?
     var rel = 0;
     tags.forEach((user_tag) => {
-      if (data.skills.includes(user_tag)) {
+      if (data.tags.includes(user_tag)) {
         rel++;
       }
     });
