@@ -10,11 +10,12 @@ on:
     branches: [ "main" ]
 
 jobs:
+  env:
+    working-directory: ./intellijob
   build:
 
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./intellijob
+    
 
     strategy:
       matrix:
