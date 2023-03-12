@@ -5,6 +5,9 @@ const API_URL = "http://localhost:3001/"
 // This is the individual listing for a job
 
 const UserSavedListing = ({jobInfo, user, savedJobs, setSavedJobs}) => {
+    const [cover, setCover] = useState(null)
+    const [coverShownChars, setCoverShownChars] = useState(0)
+
     const removeBookmark = async (action) => {
         const url = API_URL + 'removeBookmark'
         const requestOptions = {
@@ -25,6 +28,37 @@ const UserSavedListing = ({jobInfo, user, savedJobs, setSavedJobs}) => {
             catch (err){
                 console.log(err)
             }
+    }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+          setCoverShownChars(c => c + 1)
+        }, 12); //should be 40
+        return () => clearInterval(interval);
+    }, [coverShownChars]);
+
+    const handleCover = async (e) => {
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({jobid: jobInfo.id, uid: user.uid})
+          };
+
+        try {
+        const res = await fetch(API_URL + 'coverLetter', requestOptions)
+        console.log(res)
+        const json = await res.json()
+        setCover(json)
+        setCoverShownChars(0)
+        }
+        catch (err){
+            console.log(err)
+        }
+
     }
 
     return(
@@ -51,10 +85,16 @@ const UserSavedListing = ({jobInfo, user, savedJobs, setSavedJobs}) => {
                     <a>{jobInfo.description}</a>
                 </Description>
 
+                {cover !== null &&
+                <DescriptionLight>
+                    <a>{cover.substring(0, coverShownChars)}</a>
+                </DescriptionLight>
+                }
+
                 <ButtonWrapper>
-                    <Button onClick={() => { }}>Apply</Button>
+                    <Button onClick={() => {window.location.href = jobInfo.link}}>Apply</Button>
                     <Button onClick={() => {removeBookmark()}}>Remove Bookmark</Button>
-                    <Button onClick={() => { }}>Cover Letter</Button>
+                    <Button onClick={handleCover}>Cover Letter</Button>
                 </ButtonWrapper>
 
             </InnerWrapper>
@@ -118,7 +158,13 @@ const Description = styled.section`
     color: #cfcfcf;
     white-space: pre-line;
 `
-
+const DescriptionLight = styled.section`
+    margin-top: 30px;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #a1a1a1;
+    white-space: pre-line;
+`
 
 const fadeIn = keyframes`
   0% {
