@@ -19,8 +19,8 @@ const UserSavedLayout = ({user}) => {
       }
       try {
         const res = await fetch(API_URL + 'fetchBookmarkedJobs', requestOptions)
-        console.log(res)
         const json = await res.json()
+        console.log(json)
         setSavedJobs(json)
         }
         catch (err){

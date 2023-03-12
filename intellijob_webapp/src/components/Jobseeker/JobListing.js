@@ -25,8 +25,6 @@ const JobListing = ({jobInfo, user}) => {
           try {
             const res = await fetch(url, requestOptions)
             console.log(res)
-            // const json = await res.json()
-            // console.log(json)
             setBookmarked(!bookmarked)
             console.log(bookmarked)
             }

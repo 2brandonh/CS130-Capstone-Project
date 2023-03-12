@@ -315,14 +315,14 @@ app.post('/fetchBookmarkedJobs', async (req, res) => {
   // Extract the bookmarked array from query response (take first element since there should be 1 corresponding jobseeker to the given UID)
   const bookmarks = response.docs.map(doc => (doc.data().bookmarks))[0];
 
-  let jobs = []
+  let jobs
   console.log(bookmarks)
   if (bookmarks.length > 0){ // Fix bug as in cannot be used for empty array
   // Fetch jobs and then filter by document ID if it exists in bookmarks array
-  let jobs = await Jobs.where("__name__", "in", bookmarks).get();
+  jobs = await Jobs.where("__name__", "in", bookmarks).get();
   jobs = jobs.docs.map(doc => ({...doc.data(), id: doc.id}));
   }
-  
+
   // return the jobs that are bookmarked
   res.send(jobs);
 });
