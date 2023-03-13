@@ -17,7 +17,12 @@ it('renders without crashing', () => {
 
 it('Sign in rendered', () => {
   render(<App />);
-  expect(screen.getByText('Learn React')).toBeInTheDocument();
+  expect(screen.getByText('Sign In')).toBeInTheDocument();
+});
+
+it('Sign in rendered', () => {
+  render(<App />);
+  expect(screen.getByText('Join Now')).toBeInTheDocument();
 });
 
 it('renders UserSavedHome without crashing', () => {
