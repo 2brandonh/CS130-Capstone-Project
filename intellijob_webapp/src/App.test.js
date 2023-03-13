@@ -7,9 +7,17 @@ import ResumeReview from './components/ResumeReview/ResumeReview';
 import JobseekerHome from './components/Jobseeker/JobseekerHome';
 import EmployerHome from './components/Employer/EmployerHome';
 
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
+
 it('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<App />, div);
+});
+
+it('Sign in rendered', () => {
+  render(<App />);
+  expect(screen.getByText('Learn React')).toBeInTheDocument();
 });
 
 it('renders UserSavedHome without crashing', () => {
