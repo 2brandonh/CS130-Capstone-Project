@@ -27,6 +27,11 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
 
+/**
+ * The createJob POST endpoint allows for an employer to create a job position. The comments below outline the base set of attributes that an employer provides.
+ * These are augmented by job tags that get assigned based on a prompt engineered wrapper surrounding the employer's inputted job description.
+ * @module GPTService
+ */
 app.post('/createJob', async (req, res) => {
   let payload = req.body
   payload.skills = payload.skills.split(',')
@@ -75,6 +80,10 @@ app.post('/createJob', async (req, res) => {
   res.send(fb_res); // Successfully created the new job listing
 });
 
+/**The jobseekerTagging POST endpoint is called by the firebase functional component on the frontend when a new user account is created. We leverage a prompt in order to assign
+ * tags to a jobseeker to determine their most important skills and attributes needed during the matching process.
+ * @module GPTService
+ */
 app.post('/jobseekerTagging', async(req, res) => {
   console.log(req.body)
   console.log('received jobseeker tagging request')
@@ -101,7 +110,9 @@ app.post('/jobseekerTagging', async(req, res) => {
   res.send(JSON.stringify(review))
 })
 
-
+/** The resumeReview POST endpoint is called for the resume review service, in which a user can receive suggestions and bullet points on changes they should issue. 
+ * @module GPTService
+*/
 app.post('/resumeReview', async (req, res) => {
   /* Refactored for scalability */
   let jobseeker = await Jobseekers.where("uid", "==", req.body.uid).get();
@@ -128,6 +139,9 @@ app.post('/resumeReview', async (req, res) => {
   res.send(JSON.stringify(review))
 })
 
+/** The coverLetter POST endpoint is called for the cover letter service, in which a user can receive a personalized cover letter generated based on their skillset and the job they are currently applying for.
+ * @module GPTService
+*/
 app.post('/coverLetter', async (req, res) => {
   // console.log(req)
   /* Refactored for scalability */
@@ -179,6 +193,11 @@ app.post('/coverLetter', async (req, res) => {
 const MAX_FETCH_JOBS = 10;
 const MAX_USER_TAGS = 10;
 
+/** The fetchJobs POST endpoint allows for a user to fetch a list of recommended jobs. In the function, both the job id and user id are passed into the endpoint. This allows the backend to retrieve from the database collection
+ * user information and job listing information. The system utilizes a querying function provided by Firestore for fast lookup. In this manner the top K (10 in the final design) tags can be extracted from each job in the job
+ * listing database, and a ranking can be established with the tags tied to the user making the query.
+ * @module JobInformation
+*/
 app.post('/fetchJobs', async (req, res) => {
   // request will have the "uid" (jobseeker)
   // from this we can retrieve the interests and skills of the user (reading from the Jobseeker collection, with the specific uid)
@@ -262,8 +281,10 @@ app.post('/deleteJob', async (req, res) => {
   res.send(fb_res);
 });
 
-/* To be finished */
 
+/** The createBookmark endpoint allows for a passed in user id to save a job listing, which adds the job id to an array in the user's attributes within their document in the user database.
+ * @module Bookmark
+*/
 app.post('/createBookmark', async (req, res) => {
   const jobseekerID = req.body.uid;
   const jobID = req.body.jobid;
@@ -285,6 +306,9 @@ app.post('/createBookmark', async (req, res) => {
   // console.log(jobseekerDoc.data());
 });
 
+/** The removeBookmark endpoint allows for a passed in user id to remove a job listing, which removes the job id from their document in the user database.
+ * @module Bookmark
+*/
 app.post('/removeBookmark', async (req, res) => {
   const jobseekerID = req.body.uid;
   const jobID = req.body.jobid;
@@ -306,6 +330,10 @@ app.post('/removeBookmark', async (req, res) => {
   // console.log(jobseekerDoc.data());
 });
 
+/** The fetchBookmarkedJobs endpoint retrieves the array of job ids from the user document specified by the passed in user id.
+ * For each job id, the function retrieves the job data using a fast lookup provided by Firestore. An array of job data instances coresponding to user bookmarked jobs is returned to the client.
+ * @module Bookmark
+*/
 app.post('/fetchBookmarkedJobs', async (req, res) => {
   // req will have uid (jobseeker)
   // console.log(req)
