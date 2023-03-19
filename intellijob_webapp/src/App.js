@@ -17,6 +17,11 @@ import ResumeReview from './components/ResumeReview/ResumeReview';
 // TODO: redirect home based on user auth
 // TODO: pass in props to Navbar based on auth
 
+/** The App functional component acts as a mediator component controls the dialogue between each of the class
+ * components. Each component is either a core service leveraged by Intellijob, or a page the user
+ * accesses. From the App class, authentication is verified which determines the routing setup used
+ * for the particular account.
+*/
 const App = () => {
 
   const [user, setUser] = useState(null);
@@ -38,6 +43,7 @@ const App = () => {
     });
   }, []);
 
+  /** Null corresponds to a user that has not logged in. Only the signup and login pathways are available. */
   if (role === null) {
     return (
       <div className="App">
@@ -55,6 +61,8 @@ const App = () => {
       </div>
     )
   }
+  /** Jobseeker corresponds to a user that signed up as a jobseeker. 
+   * They have access to saved positions in addition to the resume review service. */
   else if (role === "Jobseeker") {
     return (
       <div className="App">
@@ -72,6 +80,8 @@ const App = () => {
       </div>
     )
   }
+  /** Employer corresponds to a user that signed up as a employer. 
+  * They have access to the createJob route that lets them create new positions to be added to the job listing DB. */
   else if (role === "Employer") {
     return (
       <div className="App">

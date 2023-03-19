@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Jobseeker/JobseekerHome.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Jobseeker/JobseekerHome.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import styled, { keyframes } from "styled-components";
+import { useState, useEffect } from "react";
+import JobLayout from "./JobLayout";
+import { getAuth } from "firebase/auth";
+
+/** The JobseekerHome functional component takes in the display name of the user for a functional display. It also takes in the user information
+ * in order to perform a matching of a user to recommended jobs. These jobs are then displayed in the JobLayout component which also includes the cover letter 
+ * functionality.
+ */
+const JobseekerHome = ({name, user}) => {
+  const [shownChars, setShownChars] = useState(0)
+  const [formStatus, setFormStatus] = useState(null)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShownChars(c => c + 1)
+    }, 30); //should be 32
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => { // Smoother transition with form scrolling
+    window.scrollTo(0, 0)
+  }, [formStatus])
+
+  const HeroPlaceholder = name + ", we found some great opportunities just for you."
+
+  return (
+    &lt;HeroWrapper>
+      &lt;Hero>
+        &lt;h1> {HeroPlaceholder.substring(0, shownChars)} &lt;/h1>
+        {shownChars >= HeroPlaceholder.length + 10 &amp;&amp; (
+          &lt;div>
+            &lt;ButtonWrapper>
+              &lt;Button onClick={() => { }}>Show me more&lt;/Button>
+              {/* &lt;Button onClick={() => {}}>Polish resume&lt;/Button>
+                          &lt;Button onClick={() => {}}>Write cover letter&lt;/Button> */}
+            &lt;/ButtonWrapper>
+            &lt;JobLayout user={user}/>
+          &lt;/div>
+        )}
+      &lt;/Hero>
+    &lt;/HeroWrapper >
+  )
+}
+
+const HeroWrapper = styled.section`
+  display: flex;
+  align-content: start;
+  min-height: 700px;
+  padding-bottom: 138px;
+  padding-top: 400px;
+  padding: 60px 0;
+  position: relative;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1100px;
+  align-items: center;
+  margin: auto;
+  
+  /* @media (max-width: 768px) {
+    margin: auto;
+    min-height: 0px;
+  } */
+`;
+const Hero = styled.div`
+    width: 100%;
+  
+    h1 {
+    padding-bottom: 35px;
+    font-size: 80px;
+    color: white;
+    font-weight: 500;
+    line-height: 100px;
+    text-align: left;
+
+    /* @media (max-width: 768px) {
+      font-size: 20px;
+      width: 100%;
+      line-height: 2;
+    } */
+  }
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+`;
+
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`
+
+const Button = styled.div`
+    box-shadow: inset 0 0 0 1px #FF5733;
+    color: #FF5733;
+    border-radius: 40px;
+    transition-duration: 170ms;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 40px;
+    padding: 12px 40px;
+    transition-duration: 500ms;
+    text-align: center;
+    max-width: 200px;
+    animation: 1.9s ${fadeIn} ease-out;
+
+  &amp;:hover {
+    text-decoration: none;
+    transition-duration: 500ms;
+    background-color: #FF5733;
+    color: white;
+    cursor: pointer;
+  }
+    `;
+
+const Button2 = styled.div`
+box-shadow: inset 0 0 0 1px #FF5733;
+color: #FF5733;
+border-radius: 40px;
+transition-duration: 170ms;
+font-size: 23px;
+font-weight: 700;
+line-height: 40px;
+padding: 12px 40px;
+transition-duration: 500ms;
+text-align: center;
+max-width: 200px;
+
+&amp;:hover {
+text-decoration: none;
+transition-duration: 500ms;
+background-color: #FF5733;
+color: white;
+cursor: pointer;
+}
+`;
+
+const ButtonClick = styled.div`
+    box-shadow: inset 0 0 0 1px #FF5733;
+    color: white;
+    background-color: #FF5733;
+    border-radius: 40px;
+    transition-duration: 170ms;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 40px;
+    padding: 12px 40px;
+    transition-duration: 500ms;
+    text-align: center;
+    max-width: 200px;
+
+  &amp;:hover {
+    cursor: pointer;
+  }
+    `;
+
+export default JobseekerHome;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#EmployerLayout">EmployerLayout</a></li><li><a href="global.html#JobseekerHome">JobseekerHome</a></li><li><a href="global.html#ResumeReview">ResumeReview</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Mar 18 2023 22:48:26 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,4 +1,32 @@
-import styled, { keyframes } from "styled-components";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Signup/Signup.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Signup/Signup.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import styled, { keyframes } from "styled-components";
 import { useState, useEffect} from "react";
 import Employer from './Employer';
 import Jobseeker from "./Jobseeker"
@@ -26,45 +54,45 @@ const Signup = () => {
     const handleButtonDisplay = () => {
         if (formStatus === null){
             return(
-                <ButtonWrapper>
-                    <Button onClick={() => setFormStatus('JOB')}>Jobseeker</Button>
-                    <Button onClick={() => setFormStatus('EMP')}>Employer</Button>
-                </ButtonWrapper>
+                &lt;ButtonWrapper>
+                    &lt;Button onClick={() => setFormStatus('JOB')}>Jobseeker&lt;/Button>
+                    &lt;Button onClick={() => setFormStatus('EMP')}>Employer&lt;/Button>
+                &lt;/ButtonWrapper>
             )
         }
         else if (formStatus === "JOB"){
             return(
-                <div>
-                <ButtonWrapper>
-                    <ButtonClick onClick={() => setFormStatus('JOB')}>Jobseeker</ButtonClick>
-                    <Button2 onClick={() => setFormStatus('EMP')}>Employer</Button2>
-                </ButtonWrapper>
-                    <Jobseeker/>
-                </div>
+                &lt;div>
+                &lt;ButtonWrapper>
+                    &lt;ButtonClick onClick={() => setFormStatus('JOB')}>Jobseeker&lt;/ButtonClick>
+                    &lt;Button2 onClick={() => setFormStatus('EMP')}>Employer&lt;/Button2>
+                &lt;/ButtonWrapper>
+                    &lt;Jobseeker/>
+                &lt;/div>
             )
         }
         else if (formStatus === "EMP"){
             return(
-                <div>
-                    <ButtonWrapper>
-                        <Button2 onClick={() => setFormStatus('JOB')}>Jobseeker</Button2>
-                        <ButtonClick onClick={() => setFormStatus('EMP')}>Employer</ButtonClick>
-                    </ButtonWrapper>
-                    <Employer/>
-                </div>
+                &lt;div>
+                    &lt;ButtonWrapper>
+                        &lt;Button2 onClick={() => setFormStatus('JOB')}>Jobseeker&lt;/Button2>
+                        &lt;ButtonClick onClick={() => setFormStatus('EMP')}>Employer&lt;/ButtonClick>
+                    &lt;/ButtonWrapper>
+                    &lt;Employer/>
+                &lt;/div>
             )
         }
     }
 
     return(
-        <HeroWrapper>
-            <Hero> 
-                <h1> {HeroPlaceholder.substring(0, shownChars)} </h1>
-                {shownChars >= HeroPlaceholder.length + 10 &&
+        &lt;HeroWrapper>
+            &lt;Hero> 
+                &lt;h1> {HeroPlaceholder.substring(0, shownChars)} &lt;/h1>
+                {shownChars >= HeroPlaceholder.length + 10 &amp;&amp;
                     handleButtonDisplay()
                 }
-            </Hero>
-        </HeroWrapper>
+            &lt;/Hero>
+        &lt;/HeroWrapper>
     )
 }
 
@@ -135,7 +163,7 @@ const Button = styled.div`
     max-width: 200px;
     animation: 1.9s ${fadeIn} ease-out;
 
-  &:hover {
+  &amp;:hover {
     text-decoration: none;
     transition-duration: 500ms;
     background-color: #FF5733;
@@ -157,7 +185,7 @@ transition-duration: 500ms;
 text-align: center;
 max-width: 200px;
 
-&:hover {
+&amp;:hover {
 text-decoration: none;
 transition-duration: 500ms;
 background-color: #FF5733;
@@ -180,9 +208,31 @@ const ButtonClick = styled.div`
     text-align: center;
     max-width: 200px;
 
-  &:hover {
+  &amp;:hover {
     cursor: pointer;
   }
     `;
 
-export default Signup;
+export default Signup;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#CreateJob">CreateJob</a></li><li><a href="global.html#EmployerLayout">EmployerLayout</a></li><li><a href="global.html#JobLayout">JobLayout</a></li><li><a href="global.html#JobListing">JobListing</a></li><li><a href="global.html#ResumeReview">ResumeReview</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Mar 18 2023 22:58:06 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
