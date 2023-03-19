@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import './App.css';
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar/DefaultNavbar';
+import UserNavbar from './components/Navbar/UserNavbar';
+import EmployerNavbar from './components/Navbar/EmployerNavbar';
+import Home from "./components/Home";
+import Signup from "./components/Signup/Signup";
+import JobseekerHome from './components/Jobseeker/JobseekerHome';
+import EmployerHome from './components/Employer/EmployerHome';
+import UserSavedHome from './components/UserSaved/UserSavedHome';
+import Login from './components/Login/Login';
+import { auth } from './components/firebase.js';
+import CreateJob from './components/CreateJob/CreateJob';
+import ResumeReview from './components/ResumeReview/ResumeReview';
+
+// TODO: redirect home based on user auth
+// TODO: pass in props to Navbar based on auth
+
+/** The App functional component acts as a mediator component controls the dialogue between each of the class
+ * components. Each component is either a core service leveraged by Intellijob, or a page the user
+ * accesses. From the App class, authentication is verified which determines the routing setup used
+ * for the particular account.
+*/
+const App = () => {
+
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
+  const [name, setName] = useState(null);
+
+  useEffect(() => {
+    const update = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        window.localStorage.setItem('localUser', JSON.stringify(authUser));
+        setUser(authUser);
+        setRole(authUser.displayName.split(":")[0])
+        setName(authUser.displayName.split(":")[1])
+      } else { // log out
+        setUser(null);
+        setRole(null)
+        setName(null)
+      }
+    });
+  }, []);
+
+  /** Null corresponds to a user that has not logged in. Only the signup and login pathways are available. */
+  if (role === null) {
+    return (
+      &lt;div className="App">
+        &lt;BrowserRouter>
+          &lt;Navbar />
+          &lt;Routes>
+            &lt;Route path='/' element={&lt;Home />} />
+            &lt;Route path='/signup' element={&lt;Signup />} />
+            &lt;Route path='/login' element={&lt;Login />} />
+            {/* &lt;Route path="*"
+              element={&lt;Navigate to="/" replace />}
+            /> */}
+          &lt;/Routes>
+        &lt;/BrowserRouter>
+      &lt;/div>
+    )
+  }
+  /** Jobseeker corresponds to a user that signed up as a jobseeker. 
+   * They have access to saved positions in addition to the resume review service. */
+  else if (role === "Jobseeker") {
+    return (
+      &lt;div className="App">
+        &lt;BrowserRouter>
+          &lt;UserNavbar name={name}/>
+          &lt;Routes>
+            &lt;Route path='/' element={&lt;JobseekerHome name={name} user={user} />} />
+            &lt;Route path='/saved' element={&lt;UserSavedHome name={name} user={user} />} />
+            &lt;Route path='/resume' element={&lt;ResumeReview name={name} user={user} />} />
+            &lt;Route path="*"
+              element={&lt;Navigate to="/" replace />}
+            />
+          &lt;/Routes>
+        &lt;/BrowserRouter>
+      &lt;/div>
+    )
+  }
+  /** Employer corresponds to a user that signed up as a employer. 
+  * They have access to the createJob route that lets them create new positions to be added to the job listing DB. */
+  else if (role === "Employer") {
+    return (
+      &lt;div className="App">
+        &lt;BrowserRouter>
+          &lt;EmployerNavbar name={name}/>
+          &lt;Routes>
+            &lt;Route path='/' element={&lt;EmployerHome name={name} user={user} />} />
+            &lt;Route path='/createjob' element={&lt;CreateJob name={name} user={user} />} />
+            &lt;Route path="*"
+              element={&lt;Navigate to="/" replace />}
+            />
+          &lt;/Routes>
+        &lt;/BrowserRouter>
+      &lt;/div>
+    )
+  }
+}
+
+// jobseeker and employer endpoints will be removed in the future to be based on user type
+
+export default App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#CreateJob">CreateJob</a></li><li><a href="global.html#EmployerLayout">EmployerLayout</a></li><li><a href="global.html#JobLayout">JobLayout</a></li><li><a href="global.html#JobListing">JobListing</a></li><li><a href="global.html#ResumeReview">ResumeReview</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Mar 18 2023 22:58:06 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

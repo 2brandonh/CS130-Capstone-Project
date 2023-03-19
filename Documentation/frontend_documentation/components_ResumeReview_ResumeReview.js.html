@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ResumeReview/ResumeReview.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ResumeReview/ResumeReview.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
+
+const API_URL = "http://localhost:3001/"
+
+/** The resume review service takes in the jobseeker resume and issues it to the backend endpoint for resume reviewing.
+ * The user id is passsed to the backend for access user information from the jobseeker database. The description is a prompt
+ * that the user passes in as their resume.
+ */
+const ResumeReview = ({ name, user }) => {
+    const [resume, setResume] = useState('')
+    //const [recs, setRecs] = useState('')
+    const [shownChars, setShownChars] = useState(0)
+
+    const [resumeReview, setResumeReview] = useState(null)
+    const [resumeShownChars, setResumeShownChars] = useState(0)
+
+    const HeroPlaceholder = "Receive an AI-Powered Resume Review."
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setShownChars(c => c + 1)
+        }, 30); //should be 40
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setResumeShownChars(c => c + 1)
+      }, 12); //should be 40
+      return () => clearInterval(interval);
+  }, [resumeShownChars]);
+
+    const editForm = (e) => { //update the value of the inputted resume or the recommendations from ChatGPT
+        e.preventDefault();
+        const updatedForm = e.target.value
+        setResume(updatedForm)
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({description: resume, uid: user.uid})
+          };
+
+          try { 
+            const res = await fetch(API_URL + 'resumeReview', requestOptions)
+            console.log(res)
+            const json = await res.json()
+            console.log(json)
+            setResumeReview(json)
+            setResumeShownChars(0)
+            }
+            catch (err){
+              console.log(err)
+            }
+    }
+
+
+    useEffect(() => {
+        console.log(resume)
+    }, [resume]);
+
+    return (
+        &lt;Wrapper>
+            &lt;HeroWrapper>
+                &lt;Hero>
+                    &lt;h1>{HeroPlaceholder.substring(0, shownChars)}&lt;/h1>
+                    {shownChars >= HeroPlaceholder.length + 10}
+                    &lt;StyledForm>
+                        &lt;InputWrapper>
+                            &lt;StyledDesc type="text" value={resume} placeholder={"Paste your resume here"} onChange={e => editForm(e)} />
+                            &lt;StyledButton onClick={handleSubmit} type="submit">Submit &lt;/StyledButton>
+                        &lt;/InputWrapper>
+                    &lt;/StyledForm>
+                &lt;/Hero>
+                {resumeReview !== null &amp;&amp;
+                &lt;Recommendation>
+                      &lt;h2> {resumeReview.substring(0, resumeShownChars)} &lt;/h2>
+                &lt;/Recommendation>
+            }
+            &lt;/HeroWrapper>
+        &lt;/Wrapper>
+    )
+
+}
+
+const Wrapper = styled.div`
+  padding: 0px;
+`;
+
+const HeroWrapper = styled.section`
+  display: flex;
+  align-content: start;
+  min-height: 250px;
+  padding-bottom: 120px;
+  padding-top: 400px;
+  padding: 60px 0;
+  position: relative;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1100px;
+  align-items: center;
+  margin: auto;
+  
+  /* @media (max-width: 768px) {
+    margin: auto;
+    min-height: 0px;
+  } */
+`;
+
+const RecommendationWrapper = styled.section`
+  display: flex;
+  align-content: center;
+  min-height: 100px;
+  padding-bottom: 138px;
+  /* padding: 60px 0; */
+  position: relative;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 800px;
+  align-items: left;
+  margin: 0 200px;
+`;
+
+const Recommendation = styled.div`
+width: 100%;
+padding-top:50px;
+h2 {
+padding-bottom: 0;
+font-size: 20px;
+color: white;
+font-weight: 500;
+line-height: 1.5;
+text-align: left;
+}
+`;
+
+const Hero = styled.div`
+    width: 100%;
+  
+    h1 {
+    padding-bottom: 0;
+    font-size: 80px;
+    color: white;
+    font-weight: 500;
+    line-height: 100px;
+    text-align: left;
+    /* @media (max-width: 768px) {
+      font-size: 20px;
+      width: 100%;
+      line-height: 2;
+    } */
+  }
+`;
+
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`
+
+
+const StyledForm = styled.form`
+  padding-top: 50px;
+  animation: 1.1s ${fadeIn} ease-out;
+  max-width: 800px;
+`
+
+const InputWrapper = styled.div`
+    max-width: 800px;
+`
+
+const StyledDesc = styled.textarea`
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #121212;
+  height: 30px;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  height: 200px;
+  font-family: Arial;
+`
+
+const StyledButton = styled.button`
+text-align: left;
+float: left;
+
+border: 1px solid #ccc;
+border-radius: 35px;
+background-color: #121212;
+color: #FF5733;
+border-color: #FF5733;
+padding: 15px;
+margin-top: 15px;
+cursor: pointer;
+
+font-size: 16px;
+height: 50px;
+transition-duration: 500ms;
+
+&amp;:hover {
+  text-decoration: none;
+  transition-duration: 500ms;
+  background-color: #FF5733;
+  color: white;
+  cursor: pointer;
+  }
+
+`
+
+
+export default ResumeReview;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#CreateJob">CreateJob</a></li><li><a href="global.html#EmployerLayout">EmployerLayout</a></li><li><a href="global.html#JobLayout">JobLayout</a></li><li><a href="global.html#JobListing">JobListing</a></li><li><a href="global.html#ResumeReview">ResumeReview</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Mar 18 2023 22:58:06 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

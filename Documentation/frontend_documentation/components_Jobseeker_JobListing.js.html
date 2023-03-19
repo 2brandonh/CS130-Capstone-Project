@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Jobseeker/JobListing.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Jobseeker/JobListing.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import styled, { keyframes } from "styled-components";
+import { useState, useEffect, useReducer} from "react";
+const API_URL = "http://localhost:3001/"
+
+// This is the individual listing for a job
+
+/** The JobListing functional component shows the individual listing for a particular job. It provides a multitude of accessible functions that interact with the backend database.
+ * These utilities include bookmarking a job, handling a cover letter, and submitting a position for the user.
+ */
+const JobListing = ({jobInfo, user}) => {
+    const [bookmarked, setBookmarked] = useState(false)
+    
+    const [cover, setCover] = useState(null)
+    const [coverShownChars, setCoverShownChars] = useState(0)
+
+    const changeBookmark = async (action) => {
+        const url = action === 'remove' ? API_URL + 'removeBookmark' : API_URL + 'createBookmark'
+        console.log('calling')
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({jobid: jobInfo.id, uid: user.uid})
+          };
+          try {
+            const res = await fetch(url, requestOptions)
+            console.log(res)
+            setBookmarked(!bookmarked)
+            console.log(bookmarked)
+            }
+            catch (err){
+                console.log(err)
+            }
+    }
+
+    const handleCover = async (e) => {
+        const requestOptions = {
+            mode: 'cors',
+            headers: {
+              'Access-Control-Allow-Origin':'*'
+            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({jobid: jobInfo.id, uid: user.uid})
+          };
+
+        try {
+        const res = await fetch(API_URL + 'coverLetter', requestOptions)
+        console.log(res)
+        const json = await res.json()
+        setCover(json)
+        setCoverShownChars(0)
+        }
+        catch (err){
+            console.log(err)
+        }
+
+    }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+          setCoverShownChars(c => c + 1)
+        }, 12); //should be 40
+        return () => clearInterval(interval);
+    }, [coverShownChars]);
+
+    return(
+        &lt;ListingWrapper>
+            &lt;InnerWrapper>
+                &lt;Header>
+                    &lt;a style={{float: "left", color: "white"}}>{jobInfo.position}&lt;/a>
+                    &lt;a style={{float: "right", color: "#FF5733", "font-weight": "500"}}>${jobInfo.comp.toLocaleString("en-US")}&lt;/a>
+                &lt;/Header>
+
+                &lt;Company>
+                    &lt;a> {jobInfo.company}&lt;/a>
+                    &lt;a> {jobInfo.recruiter}&lt;/a>
+                    {/* &lt;a> {jobInfo.posted} &lt;/a> */}
+                &lt;/Company>
+
+                &lt;Company>
+                    &lt;a style={{float: "left", color: "#ca3f5f"}}>{
+                    jobInfo.skills.join('  •  ') 
+                    }&lt;/a>
+                &lt;/Company>
+
+                &lt;Description>
+                    &lt;a>{jobInfo.description}&lt;/a>
+                &lt;/Description>
+
+                {cover !== null &amp;&amp;
+                &lt;DescriptionLight>
+                    &lt;a>{cover.substring(0, coverShownChars)}&lt;/a>
+                &lt;/DescriptionLight>
+                }
+
+                &lt;ButtonWrapper>
+                    &lt;Button onClick={() => {window.location.href = jobInfo.link}}>Apply&lt;/Button>
+                    {!bookmarked &amp;&amp; &lt;Button onClick={() => {changeBookmark('create')}}>Bookmark&lt;/Button>}
+                    {bookmarked &amp;&amp; &lt;Button onClick={() => {changeBookmark('remove')}}>Remove Bookmark&lt;/Button>}
+                    &lt;Button onClick={handleCover}>Cover Letter&lt;/Button>
+                &lt;/ButtonWrapper>
+
+            &lt;/InnerWrapper>
+            {/* &lt;a style={{color: "white"}}> Test JOB 
+                {jobInfo.company}
+                {jobInfo.position}
+                {jobInfo.jobDesc}
+                {jobInfo.skills}
+                {jobInfo.comp}
+            &lt;/a> */}
+        &lt;/ListingWrapper>
+    )
+}
+
+const ListingWrapper = styled.section`
+    box-shadow: inset 0 0 0 1px #0e9094;
+    color: #0e9094;
+    border-radius: 20px;
+    transition-duration: 170ms;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 40px;
+    padding: 12px 40px;
+    transition-duration: 500ms;
+
+    width: 100%;
+    height: 100%;
+`
+const InnerWrapper = styled.section`
+    align-content: left;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-weight: 50;
+
+    text-align: left;
+
+    flex-direction: column;
+    display: flex;
+`
+
+const Header = styled.section`
+    font-size: 30px;
+`
+
+const Company = styled.section`
+    font-size: 20px;
+    flex-direction: column;
+    display: flex;
+    margin-top: 13px;
+
+    &amp; > a {
+        line-height: 1.5;
+    }
+
+`
+
+const Description = styled.section`
+    margin-top: 30px;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #cfcfcf;
+    white-space: pre-line;
+`
+
+const DescriptionLight = styled.section`
+    margin-top: 30px;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #a1a1a1;
+    white-space: pre-line;
+`
+
+
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`
+
+
+const ButtonWrapper = styled.div`
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+`;
+
+
+const Button = styled.div`
+    box-shadow: inset 0 0 0 1px #FF5733;
+    color: #FF5733;
+    border-radius: 40px;
+    transition-duration: 170ms;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 30px;
+    padding: 12px 20px;
+    transition-duration: 500ms;
+    text-align: center;
+    max-width: 250px;
+    animation: 1.9s ${fadeIn} ease-out;
+
+  &amp;:hover {
+    text-decoration: none;
+    transition-duration: 500ms;
+    background-color: #FF5733;
+    color: white;
+    cursor: pointer;
+  }
+`;
+
+export default JobListing</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#CreateJob">CreateJob</a></li><li><a href="global.html#EmployerLayout">EmployerLayout</a></li><li><a href="global.html#JobLayout">JobLayout</a></li><li><a href="global.html#JobListing">JobListing</a></li><li><a href="global.html#ResumeReview">ResumeReview</a></li><li><a href="global.html#Signup">Signup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Mar 18 2023 22:58:06 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
