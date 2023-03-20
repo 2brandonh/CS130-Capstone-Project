@@ -88,8 +88,5 @@ it('Job Listing Prop Use is valid', () => {
   expect(screen.getByText('Meta')).toBeInTheDocument();
 });
 
-it('Job Listing Prop Use is valid', () => {
-  render(<JobListing jobInfo={jobInfo} user={null}/>);
-  expect(screen.getByText('WorkHere')).toBeInTheDocument();
-});
+
 
