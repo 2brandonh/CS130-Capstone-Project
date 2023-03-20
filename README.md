@@ -23,8 +23,8 @@ An automated build will be triggered on every push and pull request. To perform 
 
 3. Type the command npm run build
 
-Open a second Terminal window and navigate to the intellijob_webapp directory
+4. Open a second Terminal window and navigate to the intellijob_webapp directory
 
-Type the command npm run build
+5. Type the command npm run build
 
 Now you have a production build on your local machine!
