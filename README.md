@@ -13,3 +13,18 @@ It is clear that the current job board experience creates two core problems for 
 Job-seekers will be able to create accounts with their relevant experience attached, and find + apply to roles on the board. Employers will be able to create jobs, tag them with roles, and also post them for applicants to apply through.
 
 As a stretch goal, we also plan on leveraging cutting-edge AI like the ChatGPT API to enhance the strength of our job board experience. Job-seekers can use the API’s powerful capabilities to identify and fill in gaps within their profile to decrease the time it may take for them to identify the right opportunity.
+
+
+## Automation:
+An automated build will be triggered on every push and pull request. To perform the build localy adhere to the following instructions:
+1. Open the cloned repository in your favorite IDE
+
+2. Open a Terminal window and navigate to the intellijob_backend directory
+
+3. Type the command npm run build
+
+Open a second Terminal window and navigate to the intellijob_webapp directory
+
+Type the command npm run build
+
+Now you have a production build on your local machine!
