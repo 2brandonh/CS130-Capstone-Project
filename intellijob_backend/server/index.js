@@ -131,7 +131,7 @@ app.post('/emailService', async (req, res) => {
   const to_addr = employer.email;
 
   const from_addr = process.env.EMAIL_SERVICE_ADDRESS;
-  const email_pass = process.env.EMAIL_SERVICE_PWD;
+  const email_pass = process.env.EMAIL_SERVICE_PASSWORD;
   const sg_api_key = process.env.SG_API_KEY;
 
   console.log(from_addr);
