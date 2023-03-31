@@ -109,7 +109,7 @@ app.post('/emailService', async (req, res) => {
   const cover_letter_text = req.body.coverletter;
 
   if (cover_letter_text === null){
-    res.send("Null cover letter sent, not sending email");
+    res.send("ERR: Null cover letter sent, not sending email");
     return;
   }
 
@@ -132,6 +132,7 @@ app.post('/emailService', async (req, res) => {
 
   const from_addr = process.env.EMAIL_SERVICE_ADDRESS;
   const email_pass = process.env.EMAIL_SERVICE_PWD;
+  const sg_api_key = process.env.SG_API_KEY;
 
   console.log(from_addr);
   console.log(to_addr);
@@ -140,11 +141,11 @@ app.post('/emailService', async (req, res) => {
   const cover_letter_fmt = cover_letter_text + "\n This is a no-reply address. Please send any job-related reply to " + jobseeker_email + ".";
 
   var transporter = nodemailer.createTransport({
-    host: 'gmail',
+    host: 'smtp.sendgrid.net',
     port: 587,
     auth: {
-        user: from_addr,
-        pass: email_pass
+        user: "apikey",
+        pass: sg_api_key
     }
   });
 
